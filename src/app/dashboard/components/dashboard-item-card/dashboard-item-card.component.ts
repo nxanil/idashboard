@@ -135,6 +135,7 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
       'yAxisType': layout.series
     };
     this.chartObject = this.visualizationService.drawChart(dashboardAnalytic, chartConfiguration);
+    console.log(this.chartObject)
     this.loadingChart = false;
   }
 

@@ -62,6 +62,7 @@ export class VisualizerService {
         chartObject = this.drawOtherCharts(analyticObject, chartConfiguration);
         break;
     }
+    chartObject.credits =  {enabled: false};
     return chartObject;
   }
 
@@ -246,7 +247,7 @@ export class VisualizerService {
     chartObject.series.push({
       name: chartConfiguration.title ,
       data: serie,
-      showInLegend: true,
+      showInLegend: false,
       dataLabels: {
         enabled: false
       } });
@@ -660,7 +661,7 @@ export class VisualizerService {
         xAxis: {
           categories: [],
           labels: {
-            rotation: -60,
+            rotation: 0,
             style: {'color': '#000000', 'fontWeight': 'normal'}
           }
         },
@@ -861,11 +862,15 @@ export class VisualizerService {
         },
         plotOptions: {
           pie: {
+            borderWidth: 0,
             allowPointSelect: true,
             cursor: 'pointer',
             dataLabels: {
               enabled: true,
-              format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: 'black'
+              }
             }
           }
         },
