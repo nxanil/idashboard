@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {Map} from 'leaflet';
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable,} from 'rxjs/Rx';
@@ -15,7 +15,7 @@ import GeometryObject = GeoJSON.GeometryObject;
   templateUrl: './dashboard-map.component.html',
   styleUrls: ['./dashboard-map.component.css']
 })
-export class DashboardMapComponent {
+export class DashboardMapComponent extends OnInit {
   @Input() analytics: any;
   @Input() displayString: string = "Dynamic title according selection";
 
@@ -36,13 +36,7 @@ export class DashboardMapComponent {
 
 
   constructor(private  http: Http) {
-    this.baseMaps = {
-      OpenStreetMap: L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-        maxZoom: 18,
-        id: 'mapbox.streets',
-        accessToken: 'pk.eyJ1Ijoia2VsdmlubWJ3aWxvIiwiYSI6ImNpc2xrcmZsbzAwN2oyeXJueHVlOGZ0MzAifQ.GkRBoG6qFXrMdQgSkw6wJg'
-      })
-    };
+    super();
   }
 
 
@@ -465,7 +459,13 @@ export class DashboardMapComponent {
 
 
   ngOnInit() {
-
+    this.baseMaps = {
+      OpenStreetMap: L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        maxZoom: 18,
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1Ijoia2VsdmlubWJ3aWxvIiwiYSI6ImNpc2xrcmZsbzAwN2oyeXJueHVlOGZ0MzAifQ.GkRBoG6qFXrMdQgSkw6wJg'
+      })
+    };
 
     let dataLayers: any;
     let orgUnitString: string = this.getOrganisatonUnitString();

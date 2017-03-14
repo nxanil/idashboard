@@ -41,6 +41,7 @@ import {DndModule} from "ng2-dnd";
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { DashboardNotificationBlockComponent } from './components/dashboard-notification-block/dashboard-notification-block.component';
 import { DashboardMapComponent } from './components/dashboard-map/dashboard-map.component';
+import {DimensionFilterComponent} from "./components/dimension-filter/dimension-filter.component";
 
 @NgModule({
   imports: [
@@ -59,7 +60,7 @@ import { DashboardMapComponent } from './components/dashboard-map/dashboard-map.
       TreeModule,
       DndModule.forRoot()
   ],
-  declarations: [DashboardComponent, DashboardItemCardComponent, DashboardShareComponent, DashboardDimensionsComponent, DashboardItemsComponent, DashboardLandingComponent, DashboardMenuItemsComponent, CreateDashboardComponent, DashboardItemInterpretationComponent, EditDashboardComponent, ReadableNamePipe, AutosizeDirective, TruncatePipe, LoaderComponent, ErrorNotifierComponent,MetadataDictionaryComponent, OrganisationUnitTreeComponent, PeriodFilterComponent, DragabbleDirective, DropTargetDirective, DashboardLayoutComponent, ClickOutsideDirective, DashboardNotificationBlockComponent, DashboardMapComponent],
+  declarations: [DashboardComponent, DashboardItemCardComponent, DashboardShareComponent, DashboardDimensionsComponent, DashboardItemsComponent, DashboardLandingComponent, DashboardMenuItemsComponent, CreateDashboardComponent, DashboardItemInterpretationComponent, EditDashboardComponent, ReadableNamePipe, AutosizeDirective, TruncatePipe, LoaderComponent, ErrorNotifierComponent,MetadataDictionaryComponent, OrganisationUnitTreeComponent, PeriodFilterComponent, DragabbleDirective, DropTargetDirective, DashboardLayoutComponent, ClickOutsideDirective, DashboardNotificationBlockComponent, DashboardMapComponent,DimensionFilterComponent],
   providers: [
       DashboardSettingsService,
       DashboardService,
