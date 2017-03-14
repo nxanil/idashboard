@@ -450,8 +450,7 @@ export class DashboardMapComponent {
       return style;
     }
 
-    let featureStyle: any =
-      {
+    let featureStyle: any = {
         "color": "#6F6E6D",
         "fillColor": color(),
         "fillOpacity": 0.8,
