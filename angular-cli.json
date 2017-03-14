@@ -21,13 +21,15 @@
         "../node_modules/bootstrap/dist/css/bootstrap.css",
         "../node_modules/font-awesome/css/font-awesome.css",
         "../node_modules/ng2-dnd/style.css",
+        "../node_modules/leaflet/dist/leaflet.css",
         "styles.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.js",
         "../node_modules/highcharts/highcharts.js",
         "../node_modules/highcharts/highcharts-more.js",
-        "../node_modules/highcharts/modules/solid-gauge.js"
+        "../node_modules/highcharts/modules/solid-gauge.js",
+        "../node_modules/leaflet/dist/leaflet.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

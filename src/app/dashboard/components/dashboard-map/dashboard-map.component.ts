@@ -17,7 +17,7 @@ import GeometryObject = GeoJSON.GeometryObject;
 })
 export class DashboardMapComponent extends OnInit {
   @Input() analytics: any;
-  @Input() displayString: string = "Dynamic title according selection";
+  @Input() displayString: string = "";// Display string
 
 
   private dataElements: any;
@@ -122,7 +122,7 @@ export class DashboardMapComponent extends OnInit {
   }
 
   getDataValue(rows, dataElement, organisationUnit) {
-    var template = {
+    let template:any = {
       dataElementId: dataElement,
       organisationUnitUid: organisationUnit,
       organisationUnitName: this.organisationUnits[organisationUnit],
@@ -134,12 +134,12 @@ export class DashboardMapComponent extends OnInit {
       rows.forEach((row) => {
 
         if (row[0] == dataElement && row[1] == organisationUnit) {
-          template.dataElementValue = row[2];
-          return template;
+          template.dataElementValue = +row[2];
+          return false;
         }
 
       })
-
+      return template;
     } else {
       return template;
     }
@@ -151,12 +151,14 @@ export class DashboardMapComponent extends OnInit {
     let organisationUnits = this.analytics.metaData.ou;
 
     this.dataElements = this.getDataElements();
-    this.dataElements.forEach((dataElement) => {
-      dataElement.organisationUnitScores = [];
+    this.dataElements.forEach((dataElement,dataElementIndex) => {
+      this.dataElements[dataElementIndex].organisationUnitScores = [];
       organisationUnits.forEach((organisationUnit) => {
-        dataElement.organisationUnitScores.push(this.getDataValue(rows, dataElement.uid, organisationUnit));
+        console.log(this.getDataValue(rows, dataElement.uid, organisationUnit));
+        this.dataElements[dataElementIndex].organisationUnitScores.push(this.getDataValue(rows, dataElement.uid, organisationUnit));
       });
     });
+
     return this.dataElements;
   }
 
