@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Map} from 'leaflet';
+
+declare var L:any;
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable,} from 'rxjs/Rx';
 import FeatureCollection  = GeoJSON.FeatureCollection;
@@ -459,7 +461,12 @@ export class DashboardMapComponent extends OnInit {
 
 
   ngOnInit() {
-    this.baseMaps = {
+    this.map = L.map('map', { 'center': [-6.3690, 34.8888], 'zoom': 5 });
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(this.map);
+    /*this.baseMaps = {
       OpenStreetMap: L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         maxZoom: 18,
         id: 'mapbox.streets',
@@ -473,9 +480,9 @@ export class DashboardMapComponent extends OnInit {
     this.http.get('/api/geoFeatures.json?ou=ou:' + orgUnitString)
       .subscribe((data) => {
         this.geoFeatures = data.json();
-        /**
+        /!**
          * Draw Map
-         * */
+         * *!/
 
         dataLayers = this.getDataLayer();
         this.geoJsonFeatures = this.getGeoJsonObject(this.geoFeatures);
@@ -497,7 +504,7 @@ export class DashboardMapComponent extends OnInit {
         L.control.scale().addTo(map);
 
         this.map = map;
-      });
+      });*/
 
 
   }
