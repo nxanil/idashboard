@@ -445,10 +445,9 @@ export class DashboardMapComponent {
   getStyle(feature: GeoJSON.Feature<GeoJSON.GeometryObject>) {
 
     let color: any = () => {
-      let dataElementScore: any = feature.properties.dataelement.value;
-
-      return feature.properties.legend(feature.properties.dataelement.value);
-
+      let dataElementValue:number  = (feature.properties as any).dataelement.value;
+      let style:number  = (feature.properties as any).legend(dataElementValue);
+      return style;
     }
 
     let featureStyle: any =
