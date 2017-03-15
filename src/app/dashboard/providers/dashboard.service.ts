@@ -201,7 +201,13 @@ export class DashboardService {
   }
 
   private _getDashBoardItemAnalyticsUrl(dashBoardObject, dashboardType, currentUserId, useCustomDimension = false): string {
-    let url = this.constant.api + "analytics";
+    let url: string = this.constant.api;
+    if(dashboardType == 'MAP' && dashBoardObject.layer == 'boundary') {
+      url += 'geoFeatures';
+    } else {
+      url += "analytics";
+    }
+
     let column = "";
     let row = "";
     let filter = "";
@@ -226,9 +232,14 @@ export class DashboardService {
       url += ".json?";
     }
 
-    url += column + '&' + row;
-    url += filter == "" ? "" : '&' + filter;
-    url += "&user=" + currentUserId;
+    //@todo find best way to structure geoFeatures
+    if(dashBoardObject.layer == 'boundary') {
+      url += this.getGeoFeatureParameters(dashBoardObject);
+    } else {
+      url += column + '&' + row;
+      url += filter == "" ? "" : '&' + filter;
+    }
+    // url += "&user=" + currentUserId;
 
     url += "&displayProperty=NAME"+  dashboardType=="EVENT_CHART" ?
       "&outputType=EVENT&"
@@ -261,6 +272,42 @@ export class DashboardService {
       }
     });
     return items
+  }
+
+  getGeoFeatureParameters(dashboardObject): string {
+    let dimensionItems: any;
+    let params: string = 'ou=ou:';
+    let columnItems = this.findDimensionItems(dashboardObject.columns,'ou');
+    let rowItems = this.findDimensionItems(dashboardObject.rows,'ou');
+    let filterItems = this.findDimensionItems(dashboardObject.filters,'ou');
+    if( columnItems != null) {
+      dimensionItems = columnItems;
+    } else if(rowItems != null) {
+      dimensionItems = rowItems;
+    } else if(filterItems != null) {
+      dimensionItems = filterItems;
+    }
+
+    if(dimensionItems.length > 0) {
+      dimensionItems.forEach(item => {
+        params += item.dimensionItem;
+      })
+    }
+
+    return params;
+  }
+
+  findDimensionItems(dimensionHolder, dimension): any {
+    let items: any = null;
+    if(dimensionHolder.length > 0) {
+      for(let holder of dimensionHolder) {
+        if(holder.dimension == dimension) {
+          items = holder.items;
+          break;
+        }
+      }
+    }
+    return items;
   }
 
   getOrgUnitModel(dashboardObject): any {
@@ -623,6 +670,33 @@ export class DashboardService {
     return this.http.post(this.constant.api + 'sharing?type=dashboard&id=' + dashboardId, sharingData)
       .map(res => res.json())
       .catch(this.utilService.handleError);
+  }
+
+  //@todo find best way to handle maps
+  getMapAnalyticObject(dashboardItem, userId) {
+    return Observable.create(observer => {
+      this.http.get(this.constant.api +this.utilService.formatEnumString(dashboardItem.type)+"s/"+dashboardItem[this.utilService.formatEnumString(dashboardItem.type)].id+".json?fields=id,user,displayName~rename(name),longitude,latitude,zoom,basemap,mapViews[*,columns[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],rows[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],filters[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],dataDimensionItems,program[id,displayName],programStage[id,displayName],legendSet[id,displayName],!lastUpdated,!href,!created,!publicAccess,!rewindRelativePeriods,!userOrganisationUnit,!userOrganisationUnitChildren,!userOrganisationUnitGrandChildren,!externalAccess,!access,!relativePeriods,!columnDimensions,!rowDimensions,!filterDimensions,!user,!organisationUnitGroups,!itemOrganisationUnitGroups,!userGroupAccesses,!indicators,!dataElements,!dataElementOperands,!dataElementGroups,!dataSets,!periods,!organisationUnitLevels,!organisationUnits,!sortOrder,!topLimit]").map(res => res.json())
+      .catch(this.utilService.handleError)
+      .subscribe(mapObject => {
+        let boundary: any = {};
+        let data: any = [];
+        let viewCount: number = mapObject['mapViews'].length;
+        let requestCount: number = 0;
+        mapObject['mapViews'].forEach(view => {
+          this.http.get(this._getDashBoardItemAnalyticsUrl(view,'MAP',userId)).map(res => res.json()).subscribe(analytic => {
+            if(view.layer == 'boundary') {
+              boundary = analytic;
+            } else {
+              data.push(analytic);
+            }
+            requestCount++;
+            if(requestCount == viewCount) {
+              observer.next({data: data, boundary: boundary});
+            }
+          });
+        });
+      })
+    });
   }
 
 }

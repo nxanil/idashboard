@@ -1,0 +1,12 @@
+.map-block {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /*top:0;*/
+  /*bottom: 0;*/
+  height: 72vh;
+  margin: auto;
+  margin-top: -15px;
+  margin-bottom: -15px;
+  /*margin: -14px;*/
+}
