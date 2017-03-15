@@ -17,9 +17,10 @@ import GeometryObject = GeoJSON.GeometryObject;
   templateUrl: './dashboard-map.component.html',
   styleUrls: ['./dashboard-map.component.css']
 })
-export class DashboardMapComponent extends OnInit {
+export class DashboardMapComponent implements OnInit {
   @Input() analytics: any;
   @Input() displayString: string = "Dynamic title according selection";
+  @Input() mapId: string;
 
 
   private dataElements: any;
@@ -38,7 +39,7 @@ export class DashboardMapComponent extends OnInit {
 
 
   constructor(private  http: Http) {
-    super();
+
   }
 
 
@@ -461,11 +462,16 @@ export class DashboardMapComponent extends OnInit {
 
 
   ngOnInit() {
-    this.map = L.map('map', { 'center': [-6.3690, 34.8888], 'zoom': 5 });
+    setTimeout(()=>{
+      console.log(this.mapId)
+      if(!this.map){
+        this.map = L.map(this.mapId, { 'center': [-6.3690, 34.8888], 'zoom': 5 });
+      }
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(this.map);
+    }, 100);
     /*this.baseMaps = {
       OpenStreetMap: L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
         maxZoom: 18,

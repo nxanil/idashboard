@@ -8,7 +8,6 @@ import {Constants} from "../../../shared/constants";
 import {Observable} from "rxjs";
 import {isNull} from "util";
 import {DashboardLayoutComponent} from "../dashboard-layout/dashboard-layout.component";
-import {DashboardMapComponent} from "../dashboard-map/dashboard-map.component";
 import {isObject} from "rxjs/util/isObject";
 
 export const DASHBOARD_SHAPES = {
@@ -40,6 +39,7 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
   public tableObject: any;
   public loadingChart: boolean;
   public loadingTable: boolean;
+  loadingMap: boolean = true;
   public chartHasError: boolean;
   public tableHasError: boolean;
   public currentChartType: string;
@@ -78,15 +78,19 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
       (this.currentVisualization == 'REPORT_TABLE') ||
       (this.currentVisualization == 'EVENT_REPORT')) {
       this.updateDasboardItemForAnalyticTypeItems();
-    } else {
+    } else if(this.currentVisualization == 'MAP') {
+      this.dashboardService.getMapAnalyticObject(this.itemData,this.currentUser.id).subscribe(object => {
+        this.loadingMap = false;
+        //@todo this is hardcoding
+        this.analyticsObject = object.data[0];
+      });
+    }else {
       this.onItemLoaded.emit(true)
     }
 
     this.dimensionValues.asObservable().subscribe(dimension => {
       this.updateDashboardCard(dimension);
     })
-
-    this.analyticsObject = {"headers":[{"name":"dx","column":"Data","type":"java.lang.String","hidden":false,"meta":true},{"name":"ou","column":"Organisation unit","type":"java.lang.String","hidden":false,"meta":true},{"name":"value","column":"Value","type":"java.lang.Double","hidden":false,"meta":false}],"metaData":{"names":{"RD96nI1JXVV":"Kigoma Region","JT9AlIbDl1H":"ANC Anaemia Prevalance","LGTVRhKSn1V":"Singida Region","EO3Ps3ny0Nr":"Shinyanga Region","MAL4cfZoFhJ":"Geita Region","A3b5mw8DJYC":"Mbeya Region","DWSo42hunXH":"Katavi Region","BqowH5E3ytQ":"ANC Partners Syphilis +VE prevalance","hAFRrgDK0fy":"Mwanza Region","Rg0jCRi9297":"Songwe Region","dx":"Data","vAtZ8a924Lx":"Rukwa Region","Cpd5l15XxwA":"Dodoma Region","sWOWPBvwNY2":"Iringa Region","vYT08q7Wo33":"Mara Region","Crkg9BoUo5w":"Kagera Region","yyW17iCz9As":"Pwani Region","acZHYslyJLt":"Dar Es Salaam Region","qg5ySBw9X5l":"Manyara Region","ou":"Organisation unit","bN5q5k5DgLA":"Mtwara Region","lnOyHhoLzre":"Kilimanjaro Region","kZ6RlMnt2bp":"Tabora Region","qarQhOt2OEh":"Njombe Region","vU0Qt1A5IDz":"Tanga Region","YtVMnut7Foe":"Arusha Region","VMgrQWSVIYn":"Lindi Region","Sj50oz9EHvD":"Morogoro Region","pe":"Period","aEcdPpCOi3k":"Syphilis seropositivity among antenatal care attendees","IgTAEKMqKRe":"Simiyu Region","2014":"2014","FaooqUblXag":"ANC Malaria testing rate","ZYYX8Q9SGoV":"Ruvuma Region"},"dx":["BqowH5E3ytQ","FaooqUblXag","JT9AlIbDl1H","aEcdPpCOi3k"],"pe":["2014"],"ou":["YtVMnut7Foe","acZHYslyJLt","Cpd5l15XxwA","MAL4cfZoFhJ","sWOWPBvwNY2","Crkg9BoUo5w","DWSo42hunXH","RD96nI1JXVV","lnOyHhoLzre","VMgrQWSVIYn","qg5ySBw9X5l","vYT08q7Wo33","A3b5mw8DJYC","Sj50oz9EHvD","bN5q5k5DgLA","hAFRrgDK0fy","qarQhOt2OEh","yyW17iCz9As","vAtZ8a924Lx","ZYYX8Q9SGoV","EO3Ps3ny0Nr","IgTAEKMqKRe","LGTVRhKSn1V","Rg0jCRi9297","kZ6RlMnt2bp","vU0Qt1A5IDz"],"co":[]},"width":3,"height":104,"rows":[["BqowH5E3ytQ","YtVMnut7Foe","2.1"],["BqowH5E3ytQ","acZHYslyJLt","4.1"],["BqowH5E3ytQ","Cpd5l15XxwA","1.8"],["BqowH5E3ytQ","MAL4cfZoFhJ","16.7"],["BqowH5E3ytQ","sWOWPBvwNY2","6.0"],["BqowH5E3ytQ","Crkg9BoUo5w","10.0"],["BqowH5E3ytQ","DWSo42hunXH","1.2"],["BqowH5E3ytQ","RD96nI1JXVV","0.97"],["BqowH5E3ytQ","lnOyHhoLzre","1.6"],["BqowH5E3ytQ","VMgrQWSVIYn","3.6"],["BqowH5E3ytQ","qg5ySBw9X5l","2.6"],["BqowH5E3ytQ","vYT08q7Wo33","13.8"],["BqowH5E3ytQ","A3b5mw8DJYC","4.8"],["BqowH5E3ytQ","Sj50oz9EHvD","4.5"],["BqowH5E3ytQ","bN5q5k5DgLA","3.7"],["BqowH5E3ytQ","hAFRrgDK0fy","13.1"],["BqowH5E3ytQ","qarQhOt2OEh","3.0"],["BqowH5E3ytQ","yyW17iCz9As","3.0"],["BqowH5E3ytQ","vAtZ8a924Lx","2.1"],["BqowH5E3ytQ","ZYYX8Q9SGoV","5.8"],["BqowH5E3ytQ","EO3Ps3ny0Nr","3.6"],["BqowH5E3ytQ","IgTAEKMqKRe","3.1"],["BqowH5E3ytQ","LGTVRhKSn1V","1.8"],["BqowH5E3ytQ","Rg0jCRi9297","2.7"],["BqowH5E3ytQ","kZ6RlMnt2bp","4.0"],["BqowH5E3ytQ","vU0Qt1A5IDz","1.6"],["FaooqUblXag","YtVMnut7Foe","56.1"],["FaooqUblXag","acZHYslyJLt","54.4"],["FaooqUblXag","Cpd5l15XxwA","40.9"],["FaooqUblXag","MAL4cfZoFhJ","23.2"],["FaooqUblXag","sWOWPBvwNY2","21.9"],["FaooqUblXag","Crkg9BoUo5w","29.3"],["FaooqUblXag","DWSo42hunXH","36.3"],["FaooqUblXag","RD96nI1JXVV","38.3"],["FaooqUblXag","lnOyHhoLzre","54.8"],["FaooqUblXag","VMgrQWSVIYn","41.5"],["FaooqUblXag","qg5ySBw9X5l","34.3"],["FaooqUblXag","vYT08q7Wo33","30.5"],["FaooqUblXag","A3b5mw8DJYC","45.0"],["FaooqUblXag","Sj50oz9EHvD","33.5"],["FaooqUblXag","bN5q5k5DgLA","38.4"],["FaooqUblXag","hAFRrgDK0fy","20.2"],["FaooqUblXag","qarQhOt2OEh","62.5"],["FaooqUblXag","yyW17iCz9As","61.9"],["FaooqUblXag","vAtZ8a924Lx","38.4"],["FaooqUblXag","ZYYX8Q9SGoV","30.1"],["FaooqUblXag","EO3Ps3ny0Nr","25.5"],["FaooqUblXag","IgTAEKMqKRe","18.1"],["FaooqUblXag","LGTVRhKSn1V","41.8"],["FaooqUblXag","Rg0jCRi9297","35.3"],["FaooqUblXag","kZ6RlMnt2bp","33.2"],["FaooqUblXag","vU0Qt1A5IDz","38.1"],["JT9AlIbDl1H","YtVMnut7Foe","1.8"],["JT9AlIbDl1H","acZHYslyJLt","2.5"],["JT9AlIbDl1H","Cpd5l15XxwA","0.59"],["JT9AlIbDl1H","MAL4cfZoFhJ","0.6"],["JT9AlIbDl1H","sWOWPBvwNY2","0.73"],["JT9AlIbDl1H","Crkg9BoUo5w","0.45"],["JT9AlIbDl1H","DWSo42hunXH","0.32"],["JT9AlIbDl1H","RD96nI1JXVV","0.46"],["JT9AlIbDl1H","lnOyHhoLzre","1.1"],["JT9AlIbDl1H","VMgrQWSVIYn","2.3"],["JT9AlIbDl1H","qg5ySBw9X5l","0.59"],["JT9AlIbDl1H","vYT08q7Wo33","0.53"],["JT9AlIbDl1H","A3b5mw8DJYC","0.74"],["JT9AlIbDl1H","Sj50oz9EHvD","1.4"],["JT9AlIbDl1H","bN5q5k5DgLA","1.2"],["JT9AlIbDl1H","hAFRrgDK0fy","1.0"],["JT9AlIbDl1H","qarQhOt2OEh","0.49"],["JT9AlIbDl1H","yyW17iCz9As","3.2"],["JT9AlIbDl1H","vAtZ8a924Lx","0.4"],["JT9AlIbDl1H","ZYYX8Q9SGoV","0.97"],["JT9AlIbDl1H","EO3Ps3ny0Nr","1.2"],["JT9AlIbDl1H","IgTAEKMqKRe","0.15"],["JT9AlIbDl1H","LGTVRhKSn1V","0.36"],["JT9AlIbDl1H","Rg0jCRi9297","0.11"],["JT9AlIbDl1H","kZ6RlMnt2bp","0.72"],["JT9AlIbDl1H","vU0Qt1A5IDz","1.1"],["aEcdPpCOi3k","YtVMnut7Foe","2.2"],["aEcdPpCOi3k","acZHYslyJLt","3.3"],["aEcdPpCOi3k","Cpd5l15XxwA","2.5"],["aEcdPpCOi3k","MAL4cfZoFhJ","8.1"],["aEcdPpCOi3k","sWOWPBvwNY2","5.5"],["aEcdPpCOi3k","Crkg9BoUo5w","9.0"],["aEcdPpCOi3k","DWSo42hunXH","1.5"],["aEcdPpCOi3k","RD96nI1JXVV","5.1"],["aEcdPpCOi3k","lnOyHhoLzre","1.5"],["aEcdPpCOi3k","VMgrQWSVIYn","3.5"],["aEcdPpCOi3k","qg5ySBw9X5l","3.5"],["aEcdPpCOi3k","vYT08q7Wo33","6.8"],["aEcdPpCOi3k","A3b5mw8DJYC","3.2"],["aEcdPpCOi3k","Sj50oz9EHvD","3.6"],["aEcdPpCOi3k","bN5q5k5DgLA","2.5"],["aEcdPpCOi3k","hAFRrgDK0fy","8.1"],["aEcdPpCOi3k","qarQhOt2OEh","3.1"],["aEcdPpCOi3k","yyW17iCz9As","3.0"],["aEcdPpCOi3k","vAtZ8a924Lx","1.9"],["aEcdPpCOi3k","ZYYX8Q9SGoV","4.1"],["aEcdPpCOi3k","EO3Ps3ny0Nr","3.4"],["aEcdPpCOi3k","IgTAEKMqKRe","15.7"],["aEcdPpCOi3k","LGTVRhKSn1V","1.7"],["aEcdPpCOi3k","Rg0jCRi9297","3.6"],["aEcdPpCOi3k","kZ6RlMnt2bp","5.3"],["aEcdPpCOi3k","vU0Qt1A5IDz","4.4"]]};
 
   }
 
@@ -135,7 +139,6 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
       'yAxisType': layout.series
     };
     this.chartObject = this.visualizationService.drawChart(dashboardAnalytic, chartConfiguration);
-    console.log(this.chartObject)
     this.loadingChart = false;
   }
 

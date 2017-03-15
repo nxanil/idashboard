@@ -3,8 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="ed1b13f6-8fe1-48fa-954c-1ac586fc72bd" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.html" afterPath="$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.ts" afterPath="$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.ts" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/dashboard/providers/dhis-visualizer.service.ts" afterPath="$PROJECT_DIR$/src/app/dashboard/providers/dhis-visualizer.service.ts" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.html" afterPath="$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.ts" afterPath="$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.ts" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app/dashboard/providers/dashboard.service.ts" afterPath="$PROJECT_DIR$/src/app/dashboard/providers/dashboard.service.ts" />
     </list>
     <ignored path="idashboard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,8 +30,8 @@
       <file leaf-file-name="dashboard-item-card.component.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1386">
-              <caret line="77" column="49" lean-forward="false" selection-start-line="77" selection-start-column="49" selection-end-line="77" selection-end-column="49" />
+            <state relative-caret-position="227">
+              <caret line="81" column="54" lean-forward="true" selection-start-line="81" selection-start-column="54" selection-end-line="81" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -37,11 +40,10 @@
       <file leaf-file-name="dashboard-item-card.component.ts" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
-              <caret line="137" column="33" lean-forward="true" selection-start-line="137" selection-start-column="33" selection-end-line="137" selection-end-column="33" />
+            <state relative-caret-position="-270">
+              <caret line="9" column="88" lean-forward="false" selection-start-line="9" selection-start-column="88" selection-end-line="9" selection-end-column="88" />
               <folding>
-                <element signature="e#0#103#0" expanded="true" />
-                <element signature="e#3443#3493#0" expanded="false" />
+                <element signature="e#3675#3725#0" expanded="false" />
                 <element signature="n#!!block;n#visualize#0;n#DashboardItemCardComponent#0" expanded="false" />
                 <element signature="n#!!block;n#setVisualization#0;n#DashboardItemCardComponent#0" expanded="false" />
                 <element signature="n#!!block;n#drawTable#0;n#DashboardItemCardComponent#0" expanded="false" />
@@ -53,10 +55,19 @@
                 <element signature="n#!!block;n#toggleInterpretation#0;n#DashboardItemCardComponent#0" expanded="false" />
                 <element signature="n#!!block;n#deleteDashboardItem#0;n#DashboardItemCardComponent#0" expanded="false" />
                 <element signature="n#!!block;n#updateDashboardCard#0;n#DashboardItemCardComponent#0" expanded="false" />
-                <element signature="n#!!block;n#updateDasboardItemForAnalyticTypeItems#0;n#DashboardItemCardComponent#0" expanded="false" />
                 <element signature="n#!!block;n#updateDashboardItemLayout#0;n#DashboardItemCardComponent#0" expanded="false" />
                 <element signature="n#!!block;n#autoplayInterpretation#0;n#DashboardItemCardComponent#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dashboard.service.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/app/dashboard/providers/dashboard.service.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="254">
+              <caret line="692" column="43" lean-forward="false" selection-start-line="692" selection-start-column="43" selection-end-line="692" selection-end-column="43" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -83,25 +94,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dhis-visualizer.service.ts" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/app/dashboard/providers/dhis-visualizer.service.ts">
+      <file leaf-file-name="dashboard-map.component.ts" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="723" column="22" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="881" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="134">
+              <caret line="468" column="7" lean-forward="false" selection-start-line="468" selection-start-column="7" selection-end-line="468" selection-end-column="7" />
+              <folding>
+                <element signature="e#0#55#0" expanded="true" />
+                <element signature="n#!!block;n#getDataValue#0;n#DashboardMapComponent#0" expanded="false" />
+                <marker date="1489583568282" expanded="true" signature="13693:13699" ph="©" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dashboard-map.component.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.ts">
+      <file leaf-file-name="dashboard-map.component.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-72">
-              <caret line="38" column="12" lean-forward="false" selection-start-line="38" selection-start-column="12" selection-end-line="38" selection-end-column="12" />
+            <state relative-caret-position="72">
+              <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
               <folding>
-                <element signature="e#0#55#0" expanded="true" />
-                <element signature="n#!!block;n#getDataValue#0;n#DashboardMapComponent#0" expanded="false" />
-                <element signature="e#6259#7286#0" expanded="false" />
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -110,7 +124,7 @@
       <file leaf-file-name="dashboard.module.ts" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/app/dashboard/dashboard.module.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1116">
+            <state relative-caret-position="614">
               <caret line="62" column="636" lean-forward="false" selection-start-line="62" selection-start-column="636" selection-end-line="62" selection-end-column="636" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
@@ -143,16 +157,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.d.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/node_modules/@types/leaflet/index.d.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="22248">
-              <caret line="1239" column="21" lean-forward="false" selection-start-line="1239" selection-start-column="21" selection-end-line="1239" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -164,7 +168,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>base</find>
       <find>filter</find>
       <find>updatedDa</find>
       <find>status</find>
@@ -194,6 +197,7 @@
       <find>xAxis.labels</find>
       <find>color</find>
       <find>pie</find>
+      <find>ngO</find>
     </findStrings>
     <replaceStrings>
       <replace>itemData</replace>
@@ -253,16 +257,16 @@
         <option value="$PROJECT_DIR$/src/app/shared/providers/current-user.service.ts" />
         <option value="$PROJECT_DIR$/src/app/dashboard/components/organisation-unit-tree/organisation-unit-tree.component.ts" />
         <option value="$PROJECT_DIR$/src/app/dashboard/components/period-filter/period-filter.component.ts" />
-        <option value="$PROJECT_DIR$/src/app/dashboard/providers/dashboard.service.ts" />
         <option value="$PROJECT_DIR$/src/app/dashboard/components/dashboard-layout/dashboard-layout.component.ts" />
         <option value="$PROJECT_DIR$/src/app/dashboard/components/dashboard-layout/dashboard-layout.component.css" />
         <option value="$PROJECT_DIR$/src/app/dashboard/components/dashboard-layout/dashboard-layout.component.html" />
+        <option value="$PROJECT_DIR$/src/app/dashboard/dashboard.module.ts" />
+        <option value="$PROJECT_DIR$/src/app/dashboard/providers/dhis-visualizer.service.ts" />
+        <option value="$PROJECT_DIR$/src/app/dashboard/providers/dashboard.service.ts" />
+        <option value="$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.ts" />
         <option value="$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.html" />
         <option value="$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.html" />
         <option value="$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.ts" />
-        <option value="$PROJECT_DIR$/src/app/dashboard/dashboard.module.ts" />
-        <option value="$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.ts" />
-        <option value="$PROJECT_DIR$/src/app/dashboard/providers/dhis-visualizer.service.ts" />
       </list>
     </option>
   </component>
@@ -295,8 +299,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -611,6 +613,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -810,11 +814,12 @@
       <workItem from="1489503167330" duration="2433000" />
       <workItem from="1489516447239" duration="327000" />
       <workItem from="1489518608564" duration="2437000" />
+      <workItem from="1489565487024" duration="10158000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="923999000" />
+    <option name="totallyTimeSpent" value="934157000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -827,7 +832,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="24" width="1366" height="744" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="TypeScript" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23157111" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -836,7 +841,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24944155" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4024768" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4024768" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3993808" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -878,18 +883,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.ts</url>
-          <line>262</line>
+          <line>265</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.ts</url>
-          <line>258</line>
+          <line>261</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.ts</url>
-          <line>111</line>
-          <properties />
+          <line>115</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
@@ -961,13 +965,6 @@
     <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/organisation-unit-tree/organisation-unit-tree.component.ts" />
     <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/period-filter/period-filter.component.ts" />
     <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/organisation-unit-tree/organisation-unit-tree.component.css" />
-    <entry file="file://$PROJECT_DIR$/src/app/dashboard/providers/dashboard.service.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="352" column="20" lean-forward="false" selection-start-line="352" selection-start-column="20" selection-end-line="352" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-layout/dashboard-layout.component.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
@@ -996,13 +993,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-layout/dashboard-layout.component.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -1025,28 +1015,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/app.module.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="7" lean-forward="false" selection-start-line="0" selection-start-column="7" selection-end-line="0" selection-end-column="7" />
-          <folding>
-            <element signature="e#0#58#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1386">
-          <caret line="77" column="49" lean-forward="false" selection-start-line="77" selection-start-column="49" selection-end-line="77" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="25" column="26" lean-forward="false" selection-start-line="25" selection-start-column="26" selection-end-line="25" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/dashboard/providers/dhis-visualizer.service.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="732" column="8" lean-forward="true" selection-start-line="732" selection-start-column="8" selection-end-line="732" selection-end-column="8" />
           <folding />
         </state>
       </provider>
@@ -1061,9 +1051,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/dashboard/providers/dashboard.service.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="692" column="43" lean-forward="false" selection-start-line="692" selection-start-column="43" selection-end-line="692" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/app.module.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="7" lean-forward="false" selection-start-line="0" selection-start-column="7" selection-end-line="0" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/dashboard/dashboard.module.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1116">
+        <state relative-caret-position="614">
           <caret line="62" column="636" lean-forward="false" selection-start-line="62" selection-start-column="636" selection-end-line="62" selection-end-column="636" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
@@ -1071,35 +1079,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.ts">
+    <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="72">
+          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
-            <element signature="e#0#24#0" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.ts">
+    <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-72">
-          <caret line="38" column="12" lean-forward="false" selection-start-line="38" selection-start-column="12" selection-end-line="38" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#55#0" expanded="true" />
-            <element signature="n#!!block;n#getDataValue#0;n#DashboardMapComponent#0" expanded="false" />
-            <element signature="e#6259#7286#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="227">
+          <caret line="81" column="54" lean-forward="true" selection-start-line="81" selection-start-column="54" selection-end-line="81" selection-end-column="54" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-item-card/dashboard-item-card.component.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="137" column="33" lean-forward="true" selection-start-line="137" selection-start-column="33" selection-end-line="137" selection-end-column="33" />
+        <state relative-caret-position="-270">
+          <caret line="9" column="88" lean-forward="false" selection-start-line="9" selection-start-column="88" selection-end-line="9" selection-end-column="88" />
           <folding>
-            <element signature="e#0#103#0" expanded="true" />
-            <element signature="e#3443#3493#0" expanded="false" />
+            <element signature="e#3675#3725#0" expanded="false" />
             <element signature="n#!!block;n#visualize#0;n#DashboardItemCardComponent#0" expanded="false" />
             <element signature="n#!!block;n#setVisualization#0;n#DashboardItemCardComponent#0" expanded="false" />
             <element signature="n#!!block;n#drawTable#0;n#DashboardItemCardComponent#0" expanded="false" />
@@ -1111,18 +1115,21 @@
             <element signature="n#!!block;n#toggleInterpretation#0;n#DashboardItemCardComponent#0" expanded="false" />
             <element signature="n#!!block;n#deleteDashboardItem#0;n#DashboardItemCardComponent#0" expanded="false" />
             <element signature="n#!!block;n#updateDashboardCard#0;n#DashboardItemCardComponent#0" expanded="false" />
-            <element signature="n#!!block;n#updateDasboardItemForAnalyticTypeItems#0;n#DashboardItemCardComponent#0" expanded="false" />
             <element signature="n#!!block;n#updateDashboardItemLayout#0;n#DashboardItemCardComponent#0" expanded="false" />
             <element signature="n#!!block;n#autoplayInterpretation#0;n#DashboardItemCardComponent#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/app/dashboard/providers/dhis-visualizer.service.ts">
+    <entry file="file://$PROJECT_DIR$/src/app/dashboard/components/dashboard-map/dashboard-map.component.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="723" column="22" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="881" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="134">
+          <caret line="468" column="7" lean-forward="false" selection-start-line="468" selection-start-column="7" selection-end-line="468" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#55#0" expanded="true" />
+            <element signature="n#!!block;n#getDataValue#0;n#DashboardMapComponent#0" expanded="false" />
+            <marker date="1489583568282" expanded="true" signature="13693:13699" ph="©" />
+          </folding>
         </state>
       </provider>
     </entry>
