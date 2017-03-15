@@ -463,7 +463,6 @@ export class DashboardMapComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(()=>{
-      console.log(this.mapId)
       if(!this.map){
         this.map = L.map(this.mapId, { 'center': [-6.3690, 34.8888], 'zoom': 5 });
       }
@@ -515,4 +514,7 @@ export class DashboardMapComponent implements OnInit {
 
   }
 
+  resizeMap() {
+    this.map.invalidateSize();
+  }
 }

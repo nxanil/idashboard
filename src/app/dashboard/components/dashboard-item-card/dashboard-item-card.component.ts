@@ -9,6 +9,7 @@ import {Observable} from "rxjs";
 import {isNull} from "util";
 import {DashboardLayoutComponent} from "../dashboard-layout/dashboard-layout.component";
 import {isObject} from "rxjs/util/isObject";
+import {DashboardMapComponent} from "../dashboard-map/dashboard-map.component";
 
 export const DASHBOARD_SHAPES = {
   'NORMAL': ['col-md-4', 'col-sm-6', 'col-xs-12'],
@@ -29,6 +30,7 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
   @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() onItemLoaded: EventEmitter<boolean> = new EventEmitter<boolean>();
   @ViewChild(DashboardLayoutComponent) dashboardLayout: DashboardLayoutComponent;
+  @ViewChild(DashboardMapComponent) mapComponent: DashboardMapComponent;
   public isFullScreen: boolean;
   public isInterpretationShown: boolean;
   public interpretationReady: boolean;
@@ -210,6 +212,8 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
   resizeDashboard(currentShape) {
     let shapes = ['NORMAL', 'DOUBLE_WIDTH', 'FULL_WIDTH'];
     let newShape = '';
+    //Also resize map
+    this.mapComponent.resizeMap();
     if (shapes.indexOf(currentShape) + 1 < shapes.length) {
       newShape = shapes[shapes.indexOf(currentShape) + 1]
     } else {
