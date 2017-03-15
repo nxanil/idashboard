@@ -29,8 +29,7 @@
         "../node_modules/jquery/dist/jquery.js",
         "../node_modules/highcharts/highcharts.js",
         "../node_modules/highcharts/highcharts-more.js",
-        "../node_modules/highcharts/modules/solid-gauge.js",
-        "../node_modules/leaflet/dist/leaflet.js"
+        "../node_modules/highcharts/modules/solid-gauge.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

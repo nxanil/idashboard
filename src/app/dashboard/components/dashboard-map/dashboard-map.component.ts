@@ -462,16 +462,12 @@ export class DashboardMapComponent extends OnInit {
 
 
   ngOnInit() {
-    this.map = L.map('map', { 'center': [-6.3690, 34.8888], 'zoom': 5 });
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
-    /*this.baseMaps = {
-      OpenStreetMap: L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+
+    this.baseMaps = {
+      OpenStreetMap: L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
         maxZoom: 18,
-        id: 'mapbox.streets',
-        accessToken: 'pk.eyJ1Ijoia2VsdmlubWJ3aWxvIiwiYSI6ImNpc2xrcmZsbzAwN2oyeXJueHVlOGZ0MzAifQ.GkRBoG6qFXrMdQgSkw6wJg'
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       })
     };
 
@@ -481,9 +477,9 @@ export class DashboardMapComponent extends OnInit {
     this.http.get('/api/geoFeatures.json?ou=ou:' + orgUnitString)
       .subscribe((data) => {
         this.geoFeatures = data.json();
-        /!**
+        /**
          * Draw Map
-         * *!/
+         * */
 
         dataLayers = this.getDataLayer();
         this.geoJsonFeatures = this.getGeoJsonObject(this.geoFeatures);
@@ -492,7 +488,7 @@ export class DashboardMapComponent extends OnInit {
           zoomControl: false,
           scrollWheelZoom: false,
           center: L.latLng(-5.79, 36.32),
-          zoom: 6,
+          zoom: 5,
           minZoom: 4,
           maxZoom: 18,
           layers: [this.baseMaps.OpenStreetMap, this.defaultTopLayer]
@@ -505,7 +501,7 @@ export class DashboardMapComponent extends OnInit {
         L.control.scale().addTo(map);
 
         this.map = map;
-      });*/
+      });
 
 
   }
