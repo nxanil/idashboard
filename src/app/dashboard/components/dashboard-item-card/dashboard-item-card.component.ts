@@ -50,6 +50,7 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
   interpretation: string;
   customLayout: any = null;
   cardReady: boolean = false;
+  public mapId:string;
 
   public analyticsObject:any;// for testing maps components
 
@@ -81,11 +82,14 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
       (this.currentVisualization == 'EVENT_REPORT')) {
       this.updateDasboardItemForAnalyticTypeItems();
     } else if(this.currentVisualization == 'MAP') {
-      this.dashboardService.getMapAnalyticObject(this.itemData,this.currentUser.id).subscribe(object => {
-        this.loadingMap = false;
-        //@todo this is hardcoding
-        this.analyticsObject = object.data[0];
-      });
+
+      // this.analyticsObject = this.dashboardService.getMapAnalyticObject(this.itemData,this.currentUser.id).subscribe(object => {
+      //
+      //   this.loadingMap = false;
+      // });
+      this.mapId = this.itemData.id;console.log(this.itemData);
+      this.analyticsObject = this.dashboardService.getMapAnalyticObject(this.itemData,this.currentUser.id);
+
     }else {
       this.onItemLoaded.emit(true)
     }
@@ -213,7 +217,7 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
     let shapes = ['NORMAL', 'DOUBLE_WIDTH', 'FULL_WIDTH'];
     let newShape = '';
     //Also resize map
-    this.mapComponent.resizeMap();
+    // this.mapComponent.resizeMap();
     if (shapes.indexOf(currentShape) + 1 < shapes.length) {
       newShape = shapes[shapes.indexOf(currentShape) + 1]
     } else {

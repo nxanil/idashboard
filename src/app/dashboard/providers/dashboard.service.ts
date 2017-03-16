@@ -290,7 +290,8 @@ export class DashboardService {
 
     if(dimensionItems.length > 0) {
       dimensionItems.forEach(item => {
-        params += item.dimensionItem;
+        params += item.dimensionItem+";";
+
       })
     }
 
@@ -679,19 +680,49 @@ export class DashboardService {
       .catch(this.utilService.handleError)
       .subscribe(mapObject => {
         let boundary: any = {};
+        let properties: any = {};
         let data: any = [];
         let viewCount: number = mapObject['mapViews'].length;
         let requestCount: number = 0;
         mapObject['mapViews'].forEach(view => {
+
           this.http.get(this._getDashBoardItemAnalyticsUrl(view,'MAP',userId)).map(res => res.json()).subscribe(analytic => {
             if(view.layer == 'boundary') {
               boundary = analytic;
+              properties = {
+                "latitude":mapObject['latitude'],
+                "longitude":mapObject['longitude'],
+                "zoom":mapObject['zoom'],
+                "id": view.id,
+                "name": mapObject['name'],
+                "method": view.method,
+                "labels": view.labels,
+                "displayName": view.displayName,
+                "labelFontColor": view.labelFontColor,
+                "layer": view.layer,
+                "labelFontStyle": view.labelFontStyle,
+                "radiusHigh": view.radiusHigh,
+                "eventClustering": view.eventClustering,
+                "colorLow": view.colorRow,
+                "opacity": view.opacity,
+                "parentLevel": view.parentLevel,
+                "parentGraphMap": view.parentGraphMap,
+                "labelFontSize": view.labelFontSize,
+                "colorHigh": view.colorHigh,
+                "completedOnly": view.completedOnly,
+                "eventPointRadius": view.eventPointRadius,
+                "hidden": view.hidden,
+                "classes": view.classes,
+                "labelFontWeight": view.labelFontWeight,
+                "radiusLow": view.radiusLow,
+              }
             } else {
               data.push(analytic);
+
             }
             requestCount++;
             if(requestCount == viewCount) {
-              observer.next({data: data, boundary: boundary});
+              observer.next({data: data, boundary: boundary,mapProperties:properties});
             }
           });
         });

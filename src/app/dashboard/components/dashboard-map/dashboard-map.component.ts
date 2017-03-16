@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Map} from 'leaflet';
 
-declare var L:any;
+declare var $: any;
+declare var L: any;
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable,} from 'rxjs/Rx';
 import FeatureCollection  = GeoJSON.FeatureCollection;
@@ -18,7 +19,8 @@ import GeometryObject = GeoJSON.GeometryObject;
   styleUrls: ['./dashboard-map.component.css']
 })
 export class DashboardMapComponent extends OnInit {
-  @Input() analytics: any;
+  @Input() analyticsResponse: any;
+  @Input() mapId: any;
   @Input() displayString: string = "";// Display string
 
 
@@ -35,6 +37,8 @@ export class DashboardMapComponent extends OnInit {
   public geoFeatures: any;
   public dataFromAnalytics: any;
   public dataRange: any;
+  public analytics: any;
+  public mapProperties: any;
 
 
   constructor(private  http: Http) {
@@ -75,9 +79,15 @@ export class DashboardMapComponent extends OnInit {
 
     let organisationUnitCarrier: string = "";
 
-    this.analytics.metaData.ou.forEach((organisationUnitUids) => {
-      organisationUnitCarrier += organisationUnitUids + ";";
-    });
+    if ( this.analytics )
+    {
+
+      this.analytics.metaData.ou.forEach((organisationUnitUids) => {
+        organisationUnitCarrier += organisationUnitUids + ";";
+      });
+    }
+
+
 
     return organisationUnitCarrier.substring(0, organisationUnitCarrier.length - 1);
   }
@@ -124,7 +134,7 @@ export class DashboardMapComponent extends OnInit {
   }
 
   getDataValue(rows, dataElement, organisationUnit) {
-    let template:any = {
+    let template: any = {
       dataElementId: dataElement,
       organisationUnitUid: organisationUnit,
       organisationUnitName: this.organisationUnits[organisationUnit],
@@ -153,10 +163,9 @@ export class DashboardMapComponent extends OnInit {
     let organisationUnits = this.analytics.metaData.ou;
 
     this.dataElements = this.getDataElements();
-    this.dataElements.forEach((dataElement,dataElementIndex) => {
+    this.dataElements.forEach((dataElement, dataElementIndex) => {
       this.dataElements[dataElementIndex].organisationUnitScores = [];
       organisationUnits.forEach((organisationUnit) => {
-        console.log(this.getDataValue(rows, dataElement.uid, organisationUnit));
         this.dataElements[dataElementIndex].organisationUnitScores.push(this.getDataValue(rows, dataElement.uid, organisationUnit));
       });
     });
@@ -443,32 +452,34 @@ export class DashboardMapComponent extends OnInit {
   getStyle(feature: GeoJSON.Feature<GeoJSON.GeometryObject>) {
 
     let color: any = () => {
-      let dataElementValue:number  = (feature.properties as any).dataelement.value;
-      let style:number  = (feature.properties as any).legend(dataElementValue);
+      let dataElementValue: number = (feature.properties as any).dataelement.value;
+      let style: number = (feature.properties as any).legend(dataElementValue);
       return style;
     }
-
+      console.log(this);
     let featureStyle: any = {
-        "color": "#6F6E6D",
-        "fillColor": color(),
-        "fillOpacity": 0.8,
-        "weight": 2,
-        "opacity": 1,
-        "stroke": true,
-      }
+      "color": "#6F6E6D",
+      "fillColor": color(),
+      "fillOpacity": 0.8,
+      "weight": 2,
+      "opacity": 1,
+      "stroke": true,
+    }
 
     return featureStyle;
   }
 
 
-  ngOnInit() {
-
+  prepareMap(){
 
     this.baseMaps = {
-      OpenStreetMap: L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      OpenStreetMap: L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+        maxZoom: 18, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
       })
+      // OpenStreetMap: L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      //   maxZoom: 18,
+      //   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      // })
     };
 
     let dataLayers: any;
@@ -484,26 +495,48 @@ export class DashboardMapComponent extends OnInit {
         dataLayers = this.getDataLayer();
         this.geoJsonFeatures = this.getGeoJsonObject(this.geoFeatures);
         this.prepareTopLayers(dataLayers);
-        let map = L.map("map", {
-          zoomControl: false,
-          scrollWheelZoom: false,
-          center: L.latLng(-5.79, 36.32),
-          zoom: 5,
-          minZoom: 4,
-          maxZoom: 18,
-          layers: [this.baseMaps.OpenStreetMap, this.defaultTopLayer]
-        });
+
+        if (this.mapId){
+
+          let map = L.map(this.mapId, {
+            zoomControl: false,
+            scrollWheelZoom: false,
+            center: this.mapProperties.length>0?L.latLng(this.mapProperties.latitude/100000, this.mapProperties.longitude/100000):L.latLng(-5.79, 36.32),
+            zoom: this.mapProperties.length>0?this.mapProperties.zoom:5,
+            minZoom: 4,
+            maxZoom: 18,
+            layers: [this.baseMaps.OpenStreetMap, this.defaultTopLayer]
+          });
 
 
-        L.control.zoom({position: "topright"}).addTo(map);
+          L.control.zoom({position: "topright"}).addTo(map);
 
-        L.control.layers(this.baseMaps, this.topLayers).addTo(map);
-        L.control.scale().addTo(map);
+          L.control.layers(this.baseMaps, this.topLayers).addTo(map);
+          L.control.scale().addTo(map);
 
-        this.map = map;
+          this.map = map;
+        }
+
       });
 
 
   }
 
+
+
+
+  ngOnInit() {
+
+    this.analyticsResponse.subscribe(response => {
+
+       this.analytics = response.data[0];
+       this.mapProperties = response.mapProperties;
+       this.prepareMap()
+      },
+      error => {
+        console.log(error)
+      })
+
+
+}
 }
