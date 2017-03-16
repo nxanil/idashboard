@@ -24,7 +24,7 @@ export class DashboardMapComponent extends OnInit {
   @Input() displayString: string = "";// Display string
 
 
-  private dataElements: any;
+  private dataElements: any = [];
   private organisationUnits: any = {};
   private metaData: any;
 
@@ -39,6 +39,7 @@ export class DashboardMapComponent extends OnInit {
   public dataRange: any;
   public analytics: any;
   public mapProperties: any;
+  public boundary: any;
 
 
   constructor(private  http: Http) {
@@ -50,13 +51,18 @@ export class DashboardMapComponent extends OnInit {
    * Analytics Functions
    * */
 
-  getDataElements() {
-    let metaDataNames: any = this.analytics.metaData.names;
+  getDataElements(analytics,rows,organisationUnits) {
+    let metaDataNames: any = analytics.metaData.names;
 
-    let dataElementCarrier: Array<any> = [];
-    this.analytics.metaData.dx.forEach((dataElementsUids) => {
-      dataElementCarrier.push({name: metaDataNames[dataElementsUids], uid: dataElementsUids});
+    let dataElementCarrier: any = {};
+    analytics.metaData.dx.forEach((dataElementsUids) => {
+      dataElementCarrier = {name: metaDataNames[dataElementsUids], uid: dataElementsUids,organisationUnitScores:[]};
     });
+
+
+      organisationUnits.forEach((organisationUnit) => {
+        dataElementCarrier.organisationUnitScores.push(this.getDataValue(rows, dataElementCarrier.uid, organisationUnit));
+      });
 
     return dataElementCarrier;
 
@@ -79,14 +85,21 @@ export class DashboardMapComponent extends OnInit {
 
     let organisationUnitCarrier: string = "";
 
-    if ( this.analytics )
-    {
-
-      this.analytics.metaData.ou.forEach((organisationUnitUids) => {
-        organisationUnitCarrier += organisationUnitUids + ";";
-      });
+    if (this.boundary) {
+      this.boundary.rows.forEach((row) =>{
+        if ( row && row.dimension == "ou"){
+            row.items.forEach((item) =>{
+              organisationUnitCarrier += item.dimensionItem + ";";
+            });
+        }
+      })
+    } else {
+      if (this.analytics && this.analytics.length > 0) {
+        this.analytics[0].analytics.metaData.ou.forEach((organisationUnitUids) => {
+          organisationUnitCarrier += organisationUnitUids + ";";
+        });
+      }
     }
-
 
 
     return organisationUnitCarrier.substring(0, organisationUnitCarrier.length - 1);
@@ -126,7 +139,7 @@ export class DashboardMapComponent extends OnInit {
 
   getGeoJsonObject(geoFeatures) {
 
-    this.dataElements = this.getDataElements();
+    // this.dataElements = this.getDataElements();
     this.organisationUnits = this.getOrganisationUnit();
     return this.getFeatures(geoFeatures);
 
@@ -159,16 +172,15 @@ export class DashboardMapComponent extends OnInit {
 
   getDataLayer() {
 
-    let rows = this.analytics.rows;
-    let organisationUnits = this.analytics.metaData.ou;
+    this.analytics.forEach((data) => {
 
-    this.dataElements = this.getDataElements();
-    this.dataElements.forEach((dataElement, dataElementIndex) => {
-      this.dataElements[dataElementIndex].organisationUnitScores = [];
-      organisationUnits.forEach((organisationUnit) => {
-        this.dataElements[dataElementIndex].organisationUnitScores.push(this.getDataValue(rows, dataElement.uid, organisationUnit));
-      });
-    });
+      let rows = data.analytics.rows;
+      let organisationUnits = data.analytics.metaData.ou;
+
+      this.dataElements.push(this.getDataElements(data.analytics,rows,organisationUnits));
+
+
+    })
 
     return this.dataElements;
   }
@@ -456,7 +468,7 @@ export class DashboardMapComponent extends OnInit {
       let style: number = (feature.properties as any).legend(dataElementValue);
       return style;
     }
-      console.log(this);
+
     let featureStyle: any = {
       "color": "#6F6E6D",
       "fillColor": color(),
@@ -470,16 +482,13 @@ export class DashboardMapComponent extends OnInit {
   }
 
 
-  prepareMap(){
+  prepareMap() {
 
     this.baseMaps = {
       OpenStreetMap: L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
-        maxZoom: 18, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+        maxZoom: 18,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
       })
-      // OpenStreetMap: L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      //   maxZoom: 18,
-      //   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      // })
     };
 
     let dataLayers: any;
@@ -496,13 +505,13 @@ export class DashboardMapComponent extends OnInit {
         this.geoJsonFeatures = this.getGeoJsonObject(this.geoFeatures);
         this.prepareTopLayers(dataLayers);
 
-        if (this.mapId){
+        if (this.mapId) {
 
           let map = L.map(this.mapId, {
             zoomControl: false,
             scrollWheelZoom: false,
-            center: this.mapProperties.length>0?L.latLng(this.mapProperties.latitude/100000, this.mapProperties.longitude/100000):L.latLng(-5.79, 36.32),
-            zoom: this.mapProperties.length>0?this.mapProperties.zoom:5,
+            center: this.mapProperties.length > 0 ? L.latLng(this.mapProperties.latitude / 100000, this.mapProperties.longitude / 100000) : L.latLng(-5.79, 36.32),
+            zoom: this.mapProperties.length > 0 ? this.mapProperties.zoom : 5,
             minZoom: 4,
             maxZoom: 18,
             layers: [this.baseMaps.OpenStreetMap, this.defaultTopLayer]
@@ -523,20 +532,18 @@ export class DashboardMapComponent extends OnInit {
   }
 
 
-
-
   ngOnInit() {
 
     this.analyticsResponse.subscribe(response => {
-
-       this.analytics = response.data[0];
-       this.mapProperties = response.mapProperties;
-       this.prepareMap()
+        this.analytics = response.data;
+        this.mapProperties = response.mapProperties;
+        this.boundary = response.boundary;
+        this.prepareMap();
       },
       error => {
         console.log(error)
       })
 
 
-}
+  }
 }

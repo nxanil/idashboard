@@ -83,11 +83,7 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
       this.updateDasboardItemForAnalyticTypeItems();
     } else if(this.currentVisualization == 'MAP') {
 
-      // this.analyticsObject = this.dashboardService.getMapAnalyticObject(this.itemData,this.currentUser.id).subscribe(object => {
-      //
-      //   this.loadingMap = false;
-      // });
-      this.mapId = this.itemData.id;console.log(this.itemData);
+      this.mapId = this.itemData.id;
       this.analyticsObject = this.dashboardService.getMapAnalyticObject(this.itemData,this.currentUser.id);
 
     }else {

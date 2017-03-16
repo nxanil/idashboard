@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable, Subject} from "rxjs"
 import {Dashboard} from "../interfaces/dashboard";
@@ -13,27 +13,28 @@ import {isArray} from "rxjs/util/isArray";
 export class DashboardService {
   dashboards: Dashboard[];
   url: string;
-  constructor(
-    private http: Http,
-    private constant: Constants,
-    private utilService: UtilitiesService
-  ) {
+
+  constructor(private http: Http,
+              private constant: Constants,
+              private utilService: UtilitiesService) {
     this.url = this.constant.api + 'dashboards';
     this.dashboards = [];
   }
 
   all(): Observable<Dashboard[]> {
     return Observable.create(observer => {
-      if(this.dashboards.length > 0) {
+      if (this.dashboards.length > 0) {
         observer.next(this.dashboards);
         observer.complete();
       } else {
-        this.http.get(this.url +  '.json?paging=false&fields=id,name,dashboardItems[:all,users[:all],resources[:all],reports[:all]]')
+        this.http.get(this.url + '.json?paging=false&fields=id,name,dashboardItems[:all,users[:all],resources[:all],reports[:all]]')
           .map((res: Response) => res.json())
           .catch(this.utilService.handleError)
           .subscribe(response => {
             response.dashboards.forEach(dashboard => {
-              if(isUndefined(this.dashboards.filter((item) => {return item.id == dashboard.id ? item : null;})[0])) {
+              if (isUndefined(this.dashboards.filter((item) => {
+                  return item.id == dashboard.id ? item : null;
+                })[0])) {
                 this.dashboards.push(dashboard)
               }
             });
@@ -48,22 +49,22 @@ export class DashboardService {
 
   getDashboardItemWithObjectAndAnalytics(dashboardId, dashboardItemId, currentUserId, customDimensions) {
     return Observable.create(observer => {
-      for(let dashboard of this.dashboards) {
-        if(dashboard.id == dashboardId) {
-          for(let dashboardItem of dashboard.dashboardItems) {
-            if(dashboardItem.id == dashboardItemId) {
-              if(dashboardItem.hasOwnProperty('object')) {
-                if(customDimensions.length > 0) {
+      for (let dashboard of this.dashboards) {
+        if (dashboard.id == dashboardId) {
+          for (let dashboardItem of dashboard.dashboardItems) {
+            if (dashboardItem.id == dashboardItemId) {
+              if (dashboardItem.hasOwnProperty('object')) {
+                if (customDimensions.length > 0) {
                   customDimensions.forEach((dimension) => {
-                    if(dimension.name == 'ou') {
+                    if (dimension.name == 'ou') {
                       dashboardItem.object.custom_ou = dimension.value;
                     }
 
-                    if(dimension.name == 'pe') {
+                    if (dimension.name == 'pe') {
                       dashboardItem.object.custom_pe = dimension.value;
                     }
                   });
-                  this.http.get(this._getDashBoardItemAnalyticsUrl(dashboardItem.object,dashboardItem.type,currentUserId,true)).map(res => res.json())
+                  this.http.get(this._getDashBoardItemAnalyticsUrl(dashboardItem.object, dashboardItem.type, currentUserId, true)).map(res => res.json())
                     .catch(this.utilService.handleError)
                     .subscribe(analyticObject => {
                       dashboardItem['analytic'] = analyticObject;
@@ -75,7 +76,7 @@ export class DashboardService {
                   observer.complete();
                 }
               } else {
-                this.http.get(this.constant.api +this.utilService.formatEnumString(dashboardItem.type)+"s/"+dashboardItem[this.utilService.formatEnumString(dashboardItem.type)].id+".json?fields=*,program[id,name],programStage[id,name],interpretations[*,user[id,displayName],likedBy[id,displayName],comments[lastUpdated,text,user[id,displayName]]],columns[dimension,filter,legendSet,items[id,dimensionItem,dimensionItemType,displayName]],rows[dimension,filter,legendSet,items[id,dimensionItem,dimensionItemType,displayName]],filters[dimension,filter,legendSet,items[id,dimensionItem,dimensionItemType,displayName]],access,userGroupAccesses,publicAccess,displayDescription,user[displayName,dataViewOrganisationUnits],!href,!rewindRelativePeriods,!userOrganisationUnit,!userOrganisationUnitChildren,!userOrganisationUnitGrandChildren,!externalAccess,!relativePeriods,!columnDimensions,!rowDimensions,!filterDimensions,!organisationUnitGroups,!itemOrganisationUnitGroups,!indicators,!dataElements,!dataElementOperands,!dataElementGroups,!dataSets,!periods,!organisationUnitLevels,!organisationUnits")
+                this.http.get(this.constant.api + this.utilService.formatEnumString(dashboardItem.type) + "s/" + dashboardItem[this.utilService.formatEnumString(dashboardItem.type)].id + ".json?fields=*,program[id,name],programStage[id,name],interpretations[*,user[id,displayName],likedBy[id,displayName],comments[lastUpdated,text,user[id,displayName]]],columns[dimension,filter,legendSet,items[id,dimensionItem,dimensionItemType,displayName]],rows[dimension,filter,legendSet,items[id,dimensionItem,dimensionItemType,displayName]],filters[dimension,filter,legendSet,items[id,dimensionItem,dimensionItemType,displayName]],access,userGroupAccesses,publicAccess,displayDescription,user[displayName,dataViewOrganisationUnits],!href,!rewindRelativePeriods,!userOrganisationUnit,!userOrganisationUnitChildren,!userOrganisationUnitGrandChildren,!externalAccess,!relativePeriods,!columnDimensions,!rowDimensions,!filterDimensions,!organisationUnitGroups,!itemOrganisationUnitGroups,!indicators,!dataElements,!dataElementOperands,!dataElementGroups,!dataSets,!periods,!organisationUnitLevels,!organisationUnits")
                   .map(res => res.json())
                   .catch(this.utilService.handleError)
                   .subscribe(dashboardObject => {
@@ -85,7 +86,7 @@ export class DashboardService {
                     dashboardObject['layout'] = this.getLayout(dashboardObject);
                     dashboardItem['object'] = dashboardObject;
                     //get analytic object also
-                    this.http.get(this._getDashBoardItemAnalyticsUrl(dashboardObject,dashboardItem.type,currentUserId))
+                    this.http.get(this._getDashBoardItemAnalyticsUrl(dashboardObject, dashboardItem.type, currentUserId))
                       .map(res => res.json())
                       .catch(this.utilService.handleError)
                       .subscribe(analyticObject => {
@@ -93,7 +94,9 @@ export class DashboardService {
                         observer.next(dashboardItem);
                         observer.complete();
                       }, analyticError => observer.error(analyticError));
-                  },error => {observer.error(error)})
+                  }, error => {
+                    observer.error(error)
+                  })
               }
               break;
             }
@@ -106,14 +109,16 @@ export class DashboardService {
 
   find(id: string): Observable<Dashboard> {
     return Observable.create(observer => {
-      let dashboard = this.dashboards.filter((item) => {return item.id == id ? item : null;})[0];
-      if(isUndefined(dashboard)) {
+      let dashboard = this.dashboards.filter((item) => {
+        return item.id == id ? item : null;
+      })[0];
+      if (isUndefined(dashboard)) {
         this.load(id).subscribe(dashboard => {
-              observer.next(dashboard);
-              observer.complete();
-            }, error => {
-              observer.error(error)
-            })
+          observer.next(dashboard);
+          observer.complete();
+        }, error => {
+          observer.error(error)
+        })
       } else {
         observer.next(dashboard);
         observer.complete()
@@ -127,7 +132,9 @@ export class DashboardService {
         .map((res: Response) => res.json())
         .catch(this.utilService.handleError)
         .subscribe(dashboard => {
-          if(isUndefined(this.dashboards.filter((item) => {return item.id == id ? item : null;})[0])) {
+          if (isUndefined(this.dashboards.filter((item) => {
+              return item.id == id ? item : null;
+            })[0])) {
             this.dashboards.push(dashboard);
           }
           observer.next(dashboard);
@@ -171,21 +178,21 @@ export class DashboardService {
   }
 
   updateDashboardName(dashboardName: string, dashboardId): Observable<any> {
-    for(let dashboard of this.dashboards) {
-      if(dashboard.id == dashboardId) {
+    for (let dashboard of this.dashboards) {
+      if (dashboard.id == dashboardId) {
         dashboard.name = dashboardName;
         break;
       }
     }
-    return this.http.put(this.url + '/'+ dashboardId, {name: dashboardName})
+    return this.http.put(this.url + '/' + dashboardId, {name: dashboardName})
       .catch(this.utilService.handleError)
   }
 
   delete(id: string): Observable<any> {
 
-    for(let dashboard of this.dashboards) {
-      if(dashboard.id == id) {
-        this.dashboards.splice(this.dashboards.indexOf(dashboard),1);
+    for (let dashboard of this.dashboards) {
+      if (dashboard.id == id) {
+        this.dashboards.splice(this.dashboards.indexOf(dashboard), 1);
         break;
       }
     }
@@ -196,13 +203,13 @@ export class DashboardService {
 
   removeDashboardItem(dashboardItemId, dashboardId) {
     this.find(dashboardId).subscribe(dashboard => {
-      dashboard.dashboardItems.splice(dashboard.dashboardItems.indexOf({id: dashboardItemId}),1)
+      dashboard.dashboardItems.splice(dashboard.dashboardItems.indexOf({id: dashboardItemId}), 1)
     })
   }
 
   private _getDashBoardItemAnalyticsUrl(dashBoardObject, dashboardType, currentUserId, useCustomDimension = false): string {
     let url: string = this.constant.api;
-    if(dashboardType == 'MAP' && dashBoardObject.layer == 'boundary') {
+    if (dashboardType == 'MAP' && dashBoardObject.layer == 'boundary') {
       url += 'geoFeatures';
     } else {
       url += "analytics";
@@ -212,28 +219,28 @@ export class DashboardService {
     let row = "";
     let filter = "";
     //checking for columns
-    column = this.getDashboardObjectDimension('columns',dashBoardObject, useCustomDimension);
-    row = this.getDashboardObjectDimension('rows',dashBoardObject, useCustomDimension);
-    filter = this.getDashboardObjectDimension('filters',dashBoardObject, useCustomDimension);
+    column = this.getDashboardObjectDimension('columns', dashBoardObject, useCustomDimension);
+    row = this.getDashboardObjectDimension('rows', dashBoardObject, useCustomDimension);
+    filter = this.getDashboardObjectDimension('filters', dashBoardObject, useCustomDimension);
 
     //set url base on type
-    if( dashboardType=="EVENT_CHART" ) {
-      url += "/events/aggregate/"+dashBoardObject.program.id+".json?stage=" +dashBoardObject.programStage.id+"&";
-    }else if ( dashboardType=="EVENT_REPORT" ) {
-      if( dashBoardObject.dataType=="AGGREGATED_VALUES") {
-        url += "/events/aggregate/"+dashBoardObject.program.id+".json?stage=" +dashBoardObject.programStage.id+"&";
-      }else {
-        url += "/events/query/"+dashBoardObject.program.id+".json?stage=" +dashBoardObject.programStage.id+"&";
+    if (dashboardType == "EVENT_CHART") {
+      url += "/events/aggregate/" + dashBoardObject.program.id + ".json?stage=" + dashBoardObject.programStage.id + "&";
+    } else if (dashboardType == "EVENT_REPORT") {
+      if (dashBoardObject.dataType == "AGGREGATED_VALUES") {
+        url += "/events/aggregate/" + dashBoardObject.program.id + ".json?stage=" + dashBoardObject.programStage.id + "&";
+      } else {
+        url += "/events/query/" + dashBoardObject.program.id + ".json?stage=" + dashBoardObject.programStage.id + "&";
       }
 
-    }else if ( dashboardType=="EVENT_MAP" ) {
-      url +="/events/aggregate/"+dashBoardObject.program.id+".json?stage="  +dashBoardObject.programStage.id+"&";
-    }else {
+    } else if (dashboardType == "EVENT_MAP") {
+      url += "/events/aggregate/" + dashBoardObject.program.id + ".json?stage=" + dashBoardObject.programStage.id + "&";
+    } else {
       url += ".json?";
     }
 
     //@todo find best way to structure geoFeatures
-    if(dashBoardObject.layer == 'boundary') {
+    if (dashBoardObject.layer == 'boundary') {
       url += this.getGeoFeatureParameters(dashBoardObject);
     } else {
       url += column + '&' + row;
@@ -241,32 +248,32 @@ export class DashboardService {
     }
     // url += "&user=" + currentUserId;
 
-    url += "&displayProperty=NAME"+  dashboardType=="EVENT_CHART" ?
+    url += "&displayProperty=NAME" + dashboardType == "EVENT_CHART" ?
       "&outputType=EVENT&"
-      : dashboardType=="EVENT_REPORT" ?
+      : dashboardType == "EVENT_REPORT" ?
         "&outputType=EVENT&displayProperty=NAME"
-        : dashboardType=="EVENT_MAP" ?
+        : dashboardType == "EVENT_MAP" ?
           "&outputType=EVENT&displayProperty=NAME"
-          :"&displayProperty=NAME" ;
+          : "&displayProperty=NAME";
     return url;
   }
 
   getDashboardObjectDimension(dimension, dashboardObject, custom = false): string {
     let items: string = "";
-    dashboardObject[dimension].forEach((dimensionValue : any)=>{
+    dashboardObject[dimension].forEach((dimensionValue: any) => {
       items += items != "" ? '&' : "";
-      if(dimensionValue.dimension != 'dy') {
+      if (dimensionValue.dimension != 'dy') {
         items += dimension == 'filters' ? 'filter=' : 'dimension=';
         items += dimensionValue.dimension;
         items += dimensionValue.hasOwnProperty('legendSet') ? '-' + dimensionValue.legendSet.id : "";
-        items +=  ':';
+        items += ':';
         items += dimensionValue.hasOwnProperty('filter') ? dimensionValue.filter : "";
-        if(custom && dashboardObject.hasOwnProperty('custom_' + dimensionValue.dimension)) {
+        if (custom && dashboardObject.hasOwnProperty('custom_' + dimensionValue.dimension)) {
           items += dashboardObject['custom_' + dimensionValue.dimension] + ';';
         } else {
-          dimensionValue.items.forEach((itemValue,itemIndex) => {
+          dimensionValue.items.forEach((itemValue, itemIndex) => {
             items += itemValue.dimensionItem;
-            items += itemIndex == dimensionValue.items.length-1 ? "" : ";";
+            items += itemIndex == dimensionValue.items.length - 1 ? "" : ";";
           })
         }
       }
@@ -277,20 +284,20 @@ export class DashboardService {
   getGeoFeatureParameters(dashboardObject): string {
     let dimensionItems: any;
     let params: string = 'ou=ou:';
-    let columnItems = this.findDimensionItems(dashboardObject.columns,'ou');
-    let rowItems = this.findDimensionItems(dashboardObject.rows,'ou');
-    let filterItems = this.findDimensionItems(dashboardObject.filters,'ou');
-    if( columnItems != null) {
+    let columnItems = this.findDimensionItems(dashboardObject.columns, 'ou');
+    let rowItems = this.findDimensionItems(dashboardObject.rows, 'ou');
+    let filterItems = this.findDimensionItems(dashboardObject.filters, 'ou');
+    if (columnItems != null) {
       dimensionItems = columnItems;
-    } else if(rowItems != null) {
+    } else if (rowItems != null) {
       dimensionItems = rowItems;
-    } else if(filterItems != null) {
+    } else if (filterItems != null) {
       dimensionItems = filterItems;
     }
 
-    if(dimensionItems.length > 0) {
+    if (dimensionItems.length > 0) {
       dimensionItems.forEach(item => {
-        params += item.dimensionItem+";";
+        params += item.dimensionItem + ";";
 
       })
     }
@@ -300,9 +307,9 @@ export class DashboardService {
 
   findDimensionItems(dimensionHolder, dimension): any {
     let items: any = null;
-    if(dimensionHolder.length > 0) {
-      for(let holder of dimensionHolder) {
-        if(holder.dimension == dimension) {
+    if (dimensionHolder.length > 0) {
+      for (let holder of dimensionHolder) {
+        if (holder.dimension == dimension) {
           items = holder.items;
           break;
         }
@@ -312,7 +319,7 @@ export class DashboardService {
   }
 
   getOrgUnitModel(dashboardObject): any {
-    let orgUnitModel:any = {
+    let orgUnitModel: any = {
       selection_mode: "orgUnit",
       selected_level: "",
       selected_group: "",
@@ -322,18 +329,18 @@ export class DashboardService {
       user_orgunits: []
     };
     let dimensionItems: any;
-    for(let columnDimension of dashboardObject.columns) {
-      if(columnDimension.dimension == 'ou') {
+    for (let columnDimension of dashboardObject.columns) {
+      if (columnDimension.dimension == 'ou') {
         dimensionItems = columnDimension.items;
         break;
       } else {
-        for(let rowDimension of dashboardObject.rows) {
-          if(rowDimension.dimension == 'ou') {
+        for (let rowDimension of dashboardObject.rows) {
+          if (rowDimension.dimension == 'ou') {
             dimensionItems = rowDimension.items;
             break;
           } else {
-            for(let filterDimension of dashboardObject.filters) {
-              if(filterDimension.dimension == 'ou') {
+            for (let filterDimension of dashboardObject.filters) {
+              if (filterDimension.dimension == 'ou') {
                 dimensionItems = filterDimension.items;
                 break;
               }
@@ -344,16 +351,16 @@ export class DashboardService {
     }
 
     dimensionItems.forEach(item => {
-      if(item.hasOwnProperty('dimensionItemType')) {
+      if (item.hasOwnProperty('dimensionItemType')) {
         orgUnitModel.selected_orgunits.push({id: item.id, name: item.displayName})
       } else {
         //find selected organisation group
-        if(item.dimensionItem.substring(0,8) == 'OU_GROUP') {
+        if (item.dimensionItem.substring(0, 8) == 'OU_GROUP') {
           orgUnitModel.selected_group = item.dimensionItem;
         }
 
         //find selected level
-        if(item.dimensionItem.substring(0,5) == 'LEVEL') {
+        if (item.dimensionItem.substring(0, 5) == 'LEVEL') {
           orgUnitModel.selected_level = item.dimensionItem;
         }
       }
@@ -399,7 +406,7 @@ export class DashboardService {
 
   getLayout(dashboardObject) {
     let layout = {};
-    if(dashboardObject.hasOwnProperty('series')) {
+    if (dashboardObject.hasOwnProperty('series')) {
       layout = {
 
         series: dashboardObject.series,
@@ -429,16 +436,16 @@ export class DashboardService {
 
   getDashboardItemMetadataIdentifiers(dashboardObject: any): string {
     let items = "";
-    dashboardObject.rows.forEach((dashBoardObjectRow : any)=>{
-      if(dashBoardObjectRow.dimension === "dx"){
-        dashBoardObjectRow.items.forEach((dashBoardObjectRowItem : any)=>{
+    dashboardObject.rows.forEach((dashBoardObjectRow: any) => {
+      if (dashBoardObjectRow.dimension === "dx") {
+        dashBoardObjectRow.items.forEach((dashBoardObjectRowItem: any) => {
           items += dashBoardObjectRowItem.id + ";"
         });
       } else {
         //find identifiers in the column if not in row
-        dashboardObject.columns.forEach((dashBoardObjectColumn : any) => {
-          if(dashBoardObjectColumn.dimension === "dx") {
-            dashBoardObjectColumn.items.forEach((dashBoardObjectColumnItem: any)=> {
+        dashboardObject.columns.forEach((dashBoardObjectColumn: any) => {
+          if (dashBoardObjectColumn.dimension === "dx") {
+            dashBoardObjectColumn.items.forEach((dashBoardObjectColumnItem: any) => {
               items += dashBoardObjectColumnItem.id + ";"
             });
           }
@@ -452,8 +459,8 @@ export class DashboardService {
     //update dashboard item pool
     this.find(dashboardId).subscribe(
       dashboard => {
-        for(let dashboardItem of dashboard.dashboardItems) {
-          if(dashboardItem.id == dashboardItemId) {
+        for (let dashboardItem of dashboard.dashboardItems) {
+          if (dashboardItem.id == dashboardItemId) {
             dashboardItem.shape = shape;
             break;
           }
@@ -461,15 +468,18 @@ export class DashboardService {
       });
     //update permanently to the source
     //@todo find best way to show success for no body request
-    this.http.put(this.constant.root_url + 'api/dashboardItems/' + dashboardItemId + '/shape/' + shape, '').map(res => res.json()).subscribe(response => {}, error => {console.log(error)})
+    this.http.put(this.constant.root_url + 'api/dashboardItems/' + dashboardItemId + '/shape/' + shape, '').map(res => res.json()).subscribe(response => {
+    }, error => {
+      console.log(error)
+    })
   }
 
   addDashboardItem(dashboardId, dashboardItemData): Observable<string> {
     return Observable.create(observer => {
       let updatableDashboardId = this.getUpdatableDashboardItem(dashboardId, dashboardItemData);
-      let existingDashboardId = this.dashboardItemExist(dashboardId,dashboardItemData.id);
-      if(isNull(existingDashboardId) && isNull(updatableDashboardId)) {
-        let options = new RequestOptions({headers: new Headers({'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'})});
+      let existingDashboardId = this.dashboardItemExist(dashboardId, dashboardItemData.id);
+      if (isNull(existingDashboardId) && isNull(updatableDashboardId)) {
+        let options = new RequestOptions({headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'})});
         this.http.post(this.url + '/' + dashboardId + '/items/content?type=' + dashboardItemData.type + '&id=' + dashboardItemData.id, options)
           .map(res => res.json())
           .catch(this.utilService.handleError)
@@ -478,39 +488,41 @@ export class DashboardService {
               this.http.get(this.url + '/' + dashboardId + '.json?fields=id,name,dashboardItems[:all,users[:all],resources[:all],reports[:all]]')
                 .map((res: Response) => res.json())
                 .catch(this.utilService.handleError).subscribe(dashboard => {
-                  for(let dashboardItem of dashboard.dashboardItems) {
-                    if(!dashboardItem.hasOwnProperty('shape'))  {
-                      dashboardItem.shape = 'NORMAL';
-                      this.updateShape(dashboardId,dashboardItem.id, 'NORMAL');
-                    }
-                    if(dashboardItem.type == 'APP') {
-                      this.updateDashboard(dashboardId, dashboardItem);
-                      observer.next({status: 'created',id: dashboardItem.id});
-                      observer.complete();
-                      break;
-                    } else {
-                      if(dashboardItem[this.utilService.camelCaseName(dashboardItem.type)].hasOwnProperty('id')) {
-                        if(dashboardItem[this.utilService.camelCaseName(dashboardItem.type)].id == dashboardItemData.id) {
-                          this.updateDashboard(dashboardId, dashboardItem);
-                          observer.next({status: 'created',id: dashboardItem.id});
-                          observer.complete();
-                          break;
-                        }
-                      } else {
+                for (let dashboardItem of dashboard.dashboardItems) {
+                  if (!dashboardItem.hasOwnProperty('shape')) {
+                    dashboardItem.shape = 'NORMAL';
+                    this.updateShape(dashboardId, dashboardItem.id, 'NORMAL');
+                  }
+                  if (dashboardItem.type == 'APP') {
+                    this.updateDashboard(dashboardId, dashboardItem);
+                    observer.next({status: 'created', id: dashboardItem.id});
+                    observer.complete();
+                    break;
+                  } else {
+                    if (dashboardItem[this.utilService.camelCaseName(dashboardItem.type)].hasOwnProperty('id')) {
+                      if (dashboardItem[this.utilService.camelCaseName(dashboardItem.type)].id == dashboardItemData.id) {
                         this.updateDashboard(dashboardId, dashboardItem);
-                        observer.next({status: 'created',id: dashboardItem.id});
+                        observer.next({status: 'created', id: dashboardItem.id});
                         observer.complete();
                         break;
                       }
+                    } else {
+                      this.updateDashboard(dashboardId, dashboardItem);
+                      observer.next({status: 'created', id: dashboardItem.id});
+                      observer.complete();
+                      break;
                     }
                   }
-              }, error => {observer.error(error)});
+                }
+              }, error => {
+                observer.error(error)
+              });
             },
             error => {
               observer.error(error)
             })
-      } else if(!isNull(updatableDashboardId)) {
-        let options = new RequestOptions({headers: new Headers({'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'})});
+      } else if (!isNull(updatableDashboardId)) {
+        let options = new RequestOptions({headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'})});
         this.http.post(this.url + '/' + dashboardId + '/items/content?type=' + dashboardItemData.type + '&id=' + dashboardItemData.id, options)
           .map(res => res.json())
           .catch(this.utilService.handleError)
@@ -519,12 +531,12 @@ export class DashboardService {
             this.http.get(this.url + '/' + dashboardId + '.json?fields=id,name,dashboardItems[:all,users[:all],resources[:all],reports[:all]]')
               .map((res: Response) => res.json())
               .catch(this.utilService.handleError).subscribe(dashboard => {
-              for(let dashboardItem of dashboard.dashboardItems) {
-                if(!dashboardItem.hasOwnProperty('shape'))  {
+              for (let dashboardItem of dashboard.dashboardItems) {
+                if (!dashboardItem.hasOwnProperty('shape')) {
                   dashboardItem.shape = 'NORMAL';
-                  this.updateShape(dashboardId,dashboardItem.id, 'NORMAL');
+                  this.updateShape(dashboardId, dashboardItem.id, 'NORMAL');
                 }
-                if(dashboardItem.id == updatableDashboardId) {
+                if (dashboardItem.id == updatableDashboardId) {
                   this.updateDashboard(dashboardId, dashboardItem, 'update');
                   observer.next({status: 'updated', id: dashboardItem.id});
                   observer.complete();
@@ -534,9 +546,11 @@ export class DashboardService {
 
             }, error => observer.error(error));
 
-          }, error => {observer.error(error)})
+          }, error => {
+            observer.error(error)
+          })
       } else if (!isNull(existingDashboardId) && isNull(updatableDashboardId)) {
-        this.updateDashboard(dashboardId,null,'exist',existingDashboardId);
+        this.updateDashboard(dashboardId, null, 'exist', existingDashboardId);
         observer.next({status: 'Already exist', id: existingDashboardId});
         observer.complete();
       }
@@ -544,23 +558,23 @@ export class DashboardService {
   }
 
   updateDashboard(dashboardId, dashboardItem, action = 'save', dashboardItemId?) {
-    for(let dashboard of this.dashboards) {
-      if(dashboard.id == dashboardId) {
-        if(action == 'save') {
+    for (let dashboard of this.dashboards) {
+      if (dashboard.id == dashboardId) {
+        if (action == 'save') {
           dashboard.dashboardItems.unshift(dashboardItem);
-        } else if(action == 'update') {
-          for(let item of dashboard.dashboardItems) {
-            if(item.id == dashboardItem.id) {
-              dashboard.dashboardItems.splice(dashboard.dashboardItems.indexOf(item),1);
+        } else if (action == 'update') {
+          for (let item of dashboard.dashboardItems) {
+            if (item.id == dashboardItem.id) {
+              dashboard.dashboardItems.splice(dashboard.dashboardItems.indexOf(item), 1);
               dashboard.dashboardItems.unshift(dashboardItem);
               break;
             }
           }
         } else {
-          for(let item of dashboard.dashboardItems) {
-            if(item.id == dashboardItemId) {
+          for (let item of dashboard.dashboardItems) {
+            if (item.id == dashboardItemId) {
               let itemBuffer: any = item;
-              dashboard.dashboardItems.splice(dashboard.dashboardItems.indexOf(item),1);
+              dashboard.dashboardItems.splice(dashboard.dashboardItems.indexOf(item), 1);
               dashboard.dashboardItems.unshift(itemBuffer);
               break;
             }
@@ -573,14 +587,14 @@ export class DashboardService {
 
   getUpdatableDashboardItem(dashboardId, dashboardFavourate) {
     let dashboardItemId = null;
-    if(dashboardFavourate.type != 'APP') {
-      for(let dashboard of this.dashboards) {
-        if(dashboard.id == dashboardId) {
-          if(dashboard.dashboardItems.length > 0) {
-            for(let dashboardItem of dashboard.dashboardItems) {
-              if(dashboardItem.type == dashboardFavourate.type) {
-                if(!isUndefined(dashboardItem[this.utilService.camelCaseName(dashboardFavourate.type)])) {
-                  if(!dashboardItem[this.utilService.camelCaseName(dashboardFavourate.type)].hasOwnProperty('id')) {
+    if (dashboardFavourate.type != 'APP') {
+      for (let dashboard of this.dashboards) {
+        if (dashboard.id == dashboardId) {
+          if (dashboard.dashboardItems.length > 0) {
+            for (let dashboardItem of dashboard.dashboardItems) {
+              if (dashboardItem.type == dashboardFavourate.type) {
+                if (!isUndefined(dashboardItem[this.utilService.camelCaseName(dashboardFavourate.type)])) {
+                  if (!dashboardItem[this.utilService.camelCaseName(dashboardFavourate.type)].hasOwnProperty('id')) {
                     dashboardItemId = dashboardItem.id;
                   }
                 }
@@ -594,22 +608,23 @@ export class DashboardService {
     }
     return dashboardItemId;
   }
+
   dashboardItemExist(dashboardId, dashboardFavourateId) {
     let itemId = null;
-    for(let dashboard of this.dashboards) {
-      if(dashboard.id == dashboardId) {
-        if(dashboard.dashboardItems.length > 0) {
-          for(let dashboardItem of dashboard.dashboardItems) {
-            if(!isUndefined(dashboardItem[this.utilService.camelCaseName(dashboardItem.type)])) {
-              if(dashboardItem[this.utilService.camelCaseName(dashboardItem.type)].hasOwnProperty('id')) {
-                if(dashboardItem[this.utilService.camelCaseName(dashboardItem.type)].id == dashboardFavourateId) {
+    for (let dashboard of this.dashboards) {
+      if (dashboard.id == dashboardId) {
+        if (dashboard.dashboardItems.length > 0) {
+          for (let dashboardItem of dashboard.dashboardItems) {
+            if (!isUndefined(dashboardItem[this.utilService.camelCaseName(dashboardItem.type)])) {
+              if (dashboardItem[this.utilService.camelCaseName(dashboardItem.type)].hasOwnProperty('id')) {
+                if (dashboardItem[this.utilService.camelCaseName(dashboardItem.type)].id == dashboardFavourateId) {
                   itemId = dashboardItem.id;
                   break;
                 }
               }
             } else {
               //for APP type
-              if(dashboardItem.appKey == dashboardFavourateId) {
+              if (dashboardItem.appKey == dashboardFavourateId) {
                 itemId = dashboardItem.id;
                 break;
               }
@@ -625,9 +640,9 @@ export class DashboardService {
   deleteDashboardItem(dashboardId, dashboardItemId) {
     //Delete from the pool first
     this.find(dashboardId).subscribe(dashboard => {
-      for(let dashboardItem of dashboard.dashboardItems) {
-        if(dashboardItem.id == dashboardItemId) {
-          dashboard.dashboardItems.splice(dashboard.dashboardItems.indexOf(dashboardItem),1)
+      for (let dashboardItem of dashboard.dashboardItems) {
+        if (dashboardItem.id == dashboardItemId) {
+          dashboard.dashboardItems.splice(dashboard.dashboardItems.indexOf(dashboardItem), 1)
         }
       }
     });
@@ -637,9 +652,9 @@ export class DashboardService {
 
   loadDashboardSharingData(dashboardId): Observable<any> {
     return Observable.create(observer => {
-      for(let dashboard of this.dashboards) {
-        if(dashboard.id == dashboardId) {
-          if(dashboard.hasOwnProperty('sharing')) {
+      for (let dashboard of this.dashboards) {
+        if (dashboard.id == dashboardId) {
+          if (dashboard.hasOwnProperty('sharing')) {
             observer.next(dashboard['sharing']);
             observer.complete()
           } else {
@@ -662,7 +677,7 @@ export class DashboardService {
   saveSharingData(sharingData, dashboardId): Observable<any> {
     //update to the pull first
     this.dashboards.forEach(dashboard => {
-      if(dashboard.id == dashboardId) {
+      if (dashboard.id == dashboardId) {
         dashboard['sharing'] = sharingData;
       }
     });
@@ -676,57 +691,71 @@ export class DashboardService {
   //@todo find best way to handle maps
   getMapAnalyticObject(dashboardItem, userId) {
     return Observable.create(observer => {
-      this.http.get(this.constant.api +this.utilService.formatEnumString(dashboardItem.type)+"s/"+dashboardItem[this.utilService.formatEnumString(dashboardItem.type)].id+".json?fields=id,user,displayName~rename(name),longitude,latitude,zoom,basemap,mapViews[*,columns[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],rows[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],filters[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],dataDimensionItems,program[id,displayName],programStage[id,displayName],legendSet[id,displayName],!lastUpdated,!href,!created,!publicAccess,!rewindRelativePeriods,!userOrganisationUnit,!userOrganisationUnitChildren,!userOrganisationUnitGrandChildren,!externalAccess,!access,!relativePeriods,!columnDimensions,!rowDimensions,!filterDimensions,!user,!organisationUnitGroups,!itemOrganisationUnitGroups,!userGroupAccesses,!indicators,!dataElements,!dataElementOperands,!dataElementGroups,!dataSets,!periods,!organisationUnitLevels,!organisationUnits,!sortOrder,!topLimit]").map(res => res.json())
-      .catch(this.utilService.handleError)
-      .subscribe(mapObject => {
-        let boundary: any = {};
-        let properties: any = {};
-        let data: any = [];
-        let viewCount: number = mapObject['mapViews'].length;
-        let requestCount: number = 0;
-        mapObject['mapViews'].forEach(view => {
+      this.http.get(this.constant.api + this.utilService.formatEnumString(dashboardItem.type) + "s/" + dashboardItem[this.utilService.formatEnumString(dashboardItem.type)].id + ".json?fields=id,user,displayName~rename(name),longitude,latitude,zoom,basemap,mapViews[*,columns[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],rows[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],filters[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],dataDimensionItems,program[id,displayName],programStage[id,displayName],legendSet[id,displayName],!lastUpdated,!href,!created,!publicAccess,!rewindRelativePeriods,!userOrganisationUnit,!userOrganisationUnitChildren,!userOrganisationUnitGrandChildren,!externalAccess,!access,!relativePeriods,!columnDimensions,!rowDimensions,!filterDimensions,!user,!organisationUnitGroups,!itemOrganisationUnitGroups,!userGroupAccesses,!indicators,!dataElements,!dataElementOperands,!dataElementGroups,!dataSets,!periods,!organisationUnitLevels,!organisationUnits,!sortOrder,!topLimit]").map(res => res.json())
+        .catch(this.utilService.handleError)
+        .subscribe(mapObject => {
+          let boundary: any = {};
+          let properties: any = {};
+          let data: any = [];
+          let viewCount: number = mapObject['mapViews'].length;
+          let requestCount: number = 0;
+          let mapConfidurations = {data: null, boundary: null, mapProperties: null};
 
-          this.http.get(this._getDashBoardItemAnalyticsUrl(view,'MAP',userId)).map(res => res.json()).subscribe(analytic => {
-            if(view.layer == 'boundary') {
-              boundary = analytic;
-              properties = {
-                "latitude":mapObject['latitude'],
-                "longitude":mapObject['longitude'],
-                "zoom":mapObject['zoom'],
-                "id": view.id,
-                "name": mapObject['name'],
-                "method": view.method,
-                "labels": view.labels,
-                "displayName": view.displayName,
-                "labelFontColor": view.labelFontColor,
-                "layer": view.layer,
-                "labelFontStyle": view.labelFontStyle,
-                "radiusHigh": view.radiusHigh,
-                "eventClustering": view.eventClustering,
-                "colorLow": view.colorRow,
-                "opacity": view.opacity,
-                "parentLevel": view.parentLevel,
-                "parentGraphMap": view.parentGraphMap,
-                "labelFontSize": view.labelFontSize,
-                "colorHigh": view.colorHigh,
-                "completedOnly": view.completedOnly,
-                "eventPointRadius": view.eventPointRadius,
-                "hidden": view.hidden,
-                "classes": view.classes,
-                "labelFontWeight": view.labelFontWeight,
-                "radiusLow": view.radiusLow,
-              }
+          mapObject['mapViews'].forEach(view => {
+
+            // GIS  configurations
+            properties = {
+              "latitude": mapObject['latitude'],
+              "longitude": mapObject['longitude'],
+              "zoom": mapObject['zoom'],
+              "name": mapObject['name'],
+            }
+
+            mapConfidurations.mapProperties = properties;
+            if (view.layer == 'boundary') {
+              //TODO: Rajabu help with adding geojson object for each boundary layer
+              mapConfidurations.boundary = view;
             } else {
-              data.push(analytic);
+              this.http.get(this._getDashBoardItemAnalyticsUrl(view, 'MAP', userId)).map(res => res.json()).subscribe(analytic => {
+
+                // GIS thematic layer configurations
+                let layerProperties = {
+                  "name": view.name,
+                  "method": view.method,
+                  "labels": view.labels,
+                  "displayName": view.displayName,
+                  "labelFontColor": view.labelFontColor,
+                  "layer": view.layer,
+                  "labelFontStyle": view.labelFontStyle,
+                  "radiusHigh": view.radiusHigh,
+                  "eventClustering": view.eventClustering,
+                  "colorLow": view.colorRow,
+                  "opacity": view.opacity,
+                  "parentLevel": view.parentLevel,
+                  "parentGraphMap": view.parentGraphMap,
+                  "labelFontSize": view.labelFontSize,
+                  "colorHigh": view.colorHigh,
+                  "completedOnly": view.completedOnly,
+                  "eventPointRadius": view.eventPointRadius,
+                  "hidden": view.hidden,
+                  "classes": view.classes,
+                  "labelFontWeight": view.labelFontWeight,
+                  "radiusLow": view.radiusLow,
+                }
+                //TODO: Rajabu help with adding geojson object for each thematic layer
+                data.push({analytics: analytic, layerProperties: layerProperties, geojson: null});
+
+
+                if (requestCount == viewCount) {
+                  mapConfidurations.data = data;
+                  observer.next(mapConfidurations);
+                }
+              });
 
             }
             requestCount++;
-            if(requestCount == viewCount) {
-              observer.next({data: data, boundary: boundary,mapProperties:properties});
-            }
           });
-        });
-      })
+        })
     });
   }
 
