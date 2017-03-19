@@ -9,6 +9,8 @@ import {isUndefined} from "util";
 import {isObject} from "rxjs/util/isObject";
 import {isArray} from "rxjs/util/isArray";
 
+declare var $: any;
+
 @Injectable()
 export class DashboardService {
   dashboards: Dashboard[];
@@ -258,6 +260,70 @@ export class DashboardService {
     return url;
   }
 
+
+  private _getDashBoardItemMapAnalyticsUrl(dashBoardObject, dashboardType, currentUserId, useCustomDimension = false): Array<string> {
+    let url: string = this.constant.api;
+    let geoUrl: string = this.constant.api;
+    let urlArray: Array<string> = [];
+
+    if (dashBoardObject.layer == 'boundary') {
+      geoUrl += 'geoFeatures.json?';
+    } else {
+      geoUrl += 'geoFeatures.json?';
+      url += "analytics";
+    }
+
+    let column = "";
+    let row = "";
+    let filter = "";
+    //checking for columns
+    column = this.getDashboardObjectDimension('columns', dashBoardObject, useCustomDimension);
+    row = this.getDashboardObjectDimension('rows', dashBoardObject, useCustomDimension);
+    filter = this.getDashboardObjectDimension('filters', dashBoardObject, useCustomDimension);
+
+    //set url base on type
+    if (dashboardType == "EVENT_CHART") {
+      url += "/events/aggregate/" + dashBoardObject.program.id + ".json?stage=" + dashBoardObject.programStage.id + "&";
+    } else if (dashboardType == "EVENT_REPORT") {
+      if (dashBoardObject.dataType == "AGGREGATED_VALUES") {
+        url += "/events/aggregate/" + dashBoardObject.program.id + ".json?stage=" + dashBoardObject.programStage.id + "&";
+      } else {
+        url += "/events/query/" + dashBoardObject.program.id + ".json?stage=" + dashBoardObject.programStage.id + "&";
+      }
+
+    } else if (dashboardType == "EVENT_MAP") {
+      url += "/events/aggregate/" + dashBoardObject.program.id + ".json?stage=" + dashBoardObject.programStage.id + "&";
+    } else {
+      url += ".json?";
+    }
+
+    //@todo find best way to structure geoFeatures
+    if (dashBoardObject.layer == 'boundary') {
+      geoUrl += this.getGeoFeatureParameters(dashBoardObject);
+    } else {
+      geoUrl += this.getGeoFeatureParameters(dashBoardObject);
+      url += column + '&' + row;
+      url += filter == "" ? "" : '&' + filter;
+    }
+    // url += "&user=" + currentUserId;
+
+    url += "&displayProperty=NAME" + dashboardType == "EVENT_CHART" ?
+      "&outputType=EVENT&"
+      : dashboardType == "EVENT_REPORT" ?
+        "&outputType=EVENT&displayProperty=NAME"
+        : dashboardType == "EVENT_MAP" ?
+          "&outputType=EVENT&displayProperty=NAME"
+          : "&displayProperty=NAME";
+
+    if (dashBoardObject.layer == 'boundary') {
+      urlArray.push(geoUrl);
+    } else {
+      urlArray.push(geoUrl);
+      urlArray.push(url);
+    }
+    return urlArray;
+  }
+
   getDashboardObjectDimension(dimension, dashboardObject, custom = false): string {
     let items: string = "";
     dashboardObject[dimension].forEach((dimensionValue: any) => {
@@ -301,7 +367,6 @@ export class DashboardService {
 
       })
     }
-
     return params;
   }
 
@@ -699,7 +764,7 @@ export class DashboardService {
           let data: any = [];
           let viewCount: number = mapObject['mapViews'].length;
           let requestCount: number = 0;
-          let mapConfidurations = {data: null, boundary: null, mapProperties: null};
+          let mapConfidurations = {data: null, boundary: null, geojson: null, mapProperties: null};
 
           mapObject['mapViews'].forEach(view => {
 
@@ -713,11 +778,14 @@ export class DashboardService {
 
             mapConfidurations.mapProperties = properties;
             if (view.layer == 'boundary') {
-              //TODO: Rajabu help with adding geojson object for each boundary layer
               mapConfidurations.boundary = view;
-            } else {
-              this.http.get(this._getDashBoardItemAnalyticsUrl(view, 'MAP', userId)).map(res => res.json()).subscribe(analytic => {
+            }
+            this.http.get(this._getDashBoardItemAnalyticsUrl(view, 'MAP', userId)).map(res => res.json()).subscribe(analytic => {
 
+              if (view.layer == 'boundary') {
+                mapConfidurations.geojson = analytic;
+              }
+              else {
                 // GIS thematic layer configurations
                 let layerProperties = {
                   "name": view.name,
@@ -742,19 +810,90 @@ export class DashboardService {
                   "labelFontWeight": view.labelFontWeight,
                   "radiusLow": view.radiusLow,
                 }
-                //TODO: Rajabu help with adding geojson object for each thematic layer
-                data.push({analytics: analytic, layerProperties: layerProperties, geojson: null});
+
+                data.push({analytics: analytic, layerProperties: layerProperties});
 
 
-                if (requestCount == viewCount) {
-                  mapConfidurations.data = data;
-                  observer.next(mapConfidurations);
-                }
-              });
+              }
 
-            }
+              if (requestCount == viewCount) {
+                mapConfidurations.data = data;
+                observer.next(mapConfidurations);
+              }
+            });
+
+
             requestCount++;
           });
+        })
+    });
+  }
+
+  getMapObject(dashboardItem, userId) {
+    return Observable.create(observer => {
+      this.http.get(this.constant.api + this.utilService.formatEnumString(dashboardItem.type) + "s/" + dashboardItem[this.utilService.formatEnumString(dashboardItem.type)].id + ".json?fields=id,user,displayName~rename(name),longitude,latitude,zoom,basemap,mapViews[*,columns[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],rows[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],filters[dimension,filter,items[dimensionItem,dimensionItemType,displayName]],dataDimensionItems,program[id,displayName],programStage[id,displayName],legendSet[id,displayName],!lastUpdated,!href,!created,!publicAccess,!rewindRelativePeriods,!userOrganisationUnit,!userOrganisationUnitChildren,!userOrganisationUnitGrandChildren,!externalAccess,!access,!relativePeriods,!columnDimensions,!rowDimensions,!filterDimensions,!user,!organisationUnitGroups,!itemOrganisationUnitGroups,!userGroupAccesses,!indicators,!dataElements,!dataElementOperands,!dataElementGroups,!dataSets,!periods,!organisationUnitLevels,!organisationUnits,!sortOrder,!topLimit]").map(res => res.json())
+        .catch(this.utilService.handleError)
+        .subscribe(mapObject => {
+          let requestCount: number = 0;
+          let viewCount: number = mapObject['mapViews'].length;
+          let bufferMap = {
+            basemap: mapObject.basemap,
+            id: mapObject.id,
+            name: mapObject.name,
+            zoom: mapObject.zoom,
+            latitude: mapObject.latitude,
+            longitude: mapObject.longitude,
+            layers: []
+          };
+          let monitorViews = 0;
+          mapObject['mapViews'].forEach(view => {
+            let viewUrls: Array<String> = this._getDashBoardItemMapAnalyticsUrl(view, 'MAP', userId);
+
+            Observable.forkJoin(
+              $.map(viewUrls, (url) => {
+                return this.http.get(url).map(res => res.json())
+              })
+            )
+              .subscribe(response => {
+                monitorViews++;
+                // if ( response.length == viewUrls.length ){
+                  requestCount++;
+                  response.forEach((newLayer,newLayerIndex) => {
+                    if (view.layer != 'boundary') {
+                      if (newLayer instanceof Array) {
+
+                        let layer = {};
+                        layer['geofeatures_' + view.layer] = newLayer;
+                        bufferMap.layers.push(layer);
+                      } else {
+                        let layer = {};
+                        layer[view.layer] = newLayer;
+                        bufferMap.layers.push(layer);
+                      }
+
+                    } else {
+                      let layer = {};
+                      layer[view.layer] = newLayer;
+                      bufferMap.layers.push(layer);
+                    }
+
+
+                    if (monitorViews == viewCount && response.length == newLayerIndex+1) {
+
+                      observer.next(bufferMap);
+                    }
+
+
+
+                  })
+
+
+              });
+
+
+          })
+
+
         })
     });
   }

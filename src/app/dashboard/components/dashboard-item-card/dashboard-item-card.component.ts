@@ -52,7 +52,7 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
   cardReady: boolean = false;
   public mapId:string;
 
-  public analyticsObject:any;// for testing maps components
+  public mapObject:any;// for testing maps components
 
   constructor(private dashboardItemService: DashboardItemService,
               private dashboardService: DashboardService,
@@ -82,10 +82,9 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
       (this.currentVisualization == 'EVENT_REPORT')) {
       this.updateDasboardItemForAnalyticTypeItems();
     } else if(this.currentVisualization == 'MAP') {
-
+      // this.analyticsObject = this.dashboardService.getMapAnalyticObject(this.itemData,this.currentUser.id);
+      this.mapObject = this.dashboardService.getMapObject(this.itemData,this.currentUser.id);
       this.mapId = this.itemData.id;
-      this.analyticsObject = this.dashboardService.getMapAnalyticObject(this.itemData,this.currentUser.id);
-
     }else {
       this.onItemLoaded.emit(true)
     }
