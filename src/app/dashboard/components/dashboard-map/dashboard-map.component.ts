@@ -334,9 +334,9 @@ export class DashboardMapComponent extends OnInit {
                 let dataElementName = properties.dataelement.name;
                 let dataElementValue = properties.dataelement.value;
                 let toolTipContent:string =
-                    "<div style='color:black'>" +
+                    "<div style='color:#333!important;'>" +
                     "<table>" +
-                    "<tr><th>"+featureName+"</th><td> ("+dataElementValue+")</td></tr>"+
+                    "<tr><th style='color:#333!important;'>"+featureName+"</th><td style='color:#333!important;'> ("+dataElementValue+")</td></tr>"+
                     "</table>" +
                     "</div>";
                 layer.closeTooltip();
@@ -346,8 +346,8 @@ export class DashboardMapComponent extends OnInit {
                 }else{
                     layer.bindTooltip(toolTipContent,{
                         direction:'auto',
-                        permanent: true,
-                        sticky: true,
+                        permanent: false,
+                        sticky: false,
                         interactive: true,
                         opacity: 2})
                 }
