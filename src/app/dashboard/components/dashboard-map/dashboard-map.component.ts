@@ -56,6 +56,7 @@ export class DashboardMapComponent extends OnInit {
 
   getDataElements(analytics, rows, organisationUnits) {
     let metaDataNames: any = analytics.metaData.names;
+    let period: any = this.preparePeriod(analytics.metaData.pe);
 
     let dataElementCarrier: any = {};
     analytics.metaData.dx.forEach((dataElementsUids) => {
@@ -63,7 +64,7 @@ export class DashboardMapComponent extends OnInit {
     });
 
     organisationUnits.forEach((organisationUnit) => {
-      dataElementCarrier.organisationUnitScores.push(this.getDataValue(rows, dataElementCarrier.uid, organisationUnit));
+      dataElementCarrier.organisationUnitScores.push(this.getDataValue(rows, dataElementCarrier.uid, organisationUnit,period));
 
     });
     dataElementCarrier.boundaries = organisationUnits;
@@ -71,7 +72,14 @@ export class DashboardMapComponent extends OnInit {
 
 
   }
-
+  preparePeriod(period){
+    let periodValue:any = "";
+    if ( period instanceof  Array )
+    {
+      periodValue = period[0];
+    }
+    return periodValue;
+  }
   getOrganisationUnit() {
 
     // let organisationUnitCarrier: Array<any> = [];
@@ -176,9 +184,10 @@ export class DashboardMapComponent extends OnInit {
 
   }
 
-  getDataValue(rows, dataElement, organisationUnit) {
+  getDataValue(rows, dataElement, organisationUnit,period) {
     let template: any = {
       dataElementId: dataElement,
+      period: period,
       organisationUnitUid: organisationUnit.id,
       organisationUnitName: organisationUnit.na,
       dataElementValue: 0
@@ -186,7 +195,6 @@ export class DashboardMapComponent extends OnInit {
     if (rows.length > 0) {
 
       rows.forEach((row) => {
-
         if (row[0] == dataElement && row[1] == organisationUnit.id) {
           template.dataElementValue = +row[2];
           return false;
@@ -254,6 +262,7 @@ export class DashboardMapComponent extends OnInit {
             geoJsonFeature.properties.dataelement = {
               id: organisationUnitScores[featureIndex].dataElementId,
               name: dataLayer.name,
+              period:organisationUnitScores[featureIndex].period,
               value: organisationUnitScores[featureIndex].dataElementValue
             };
             geoJsonFeature.properties.legend = this.prepareDataRegand(dataLayer);
@@ -268,29 +277,30 @@ export class DashboardMapComponent extends OnInit {
             layer.on({
               click: (event) => {
 
-                // let clickedFeature:Feature<GeometryObject> = event.layer.feature;
-                //
-                //
-                // let featureName = clickedFeature.properties.name;
-                // let dataElementName = clickedFeature.properties.dataelement.name;
-                // let dataElementValue = clickedFeature.properties.dataelement.value;
-                // let popUpContent:string =
-                //     "<p><b>"+dataElementName+"</b></p>" +
-                //     "<div>" +
-                //     "<table>" +
-                //     "<tr><th>Organisation Unit Name :</th><td>"+featureName+"</td></tr>"+
-                //     "<tr><th>Available Data :</th><td>"+dataElementValue+"</td></tr>"+
-                //     "</table>" +
-                //     "</div>";
-                //
-                //
-                // let toolTip = layer.getTooltip();
-                // if (toolTip){
-                //     layer.closeTooltip();
-                //     layer.bindPopup(popUpContent,{keepInView:true});
-                // } else {
-                //     layer.bindPopup(popUpContent,{keepInView:true});
-                // }
+                let clickedFeature:Feature<GeometryObject> = event.layer.feature;
+                let properties:any = clickedFeature.properties;
+
+                let featureName = properties.name;
+                let dataElementName = properties.dataelement.name;
+                let dataElementValue = properties.dataelement.value;
+                let period = properties.dataelement.period;
+                let popUpContent:string =
+                    "<div style='color:#333!important;'>" +
+                    "<table>" +
+                    "<tr><td style='color:#333!important;'>"+featureName+"</td></tr>"+
+                    "<tr><td style='color:#333!important;'>"+dataElementName+"</td></tr>"+
+                    "<tr><td style='color:#333!important;'>"+period+" : "+dataElementValue+"</td></tr>"+
+                    "</table>" +
+                    "</div>";
+
+
+                let toolTip = layer.getTooltip();
+                if (toolTip){
+                    layer.closeTooltip();
+                    layer.bindPopup(popUpContent,{keepInView:true});
+                } else {
+                    layer.bindPopup(popUpContent,{keepInView:true});
+                }
 
               },
               add: (event) => {
@@ -309,7 +319,7 @@ export class DashboardMapComponent extends OnInit {
                 if (toolTip) {
                   layer.closeTooltip();
                 }
-                console.log("MOUSE REMOVED")
+
                 let popUp = layer.getPopup();
 
                 if (popUp && popUp.isOpen()) {
