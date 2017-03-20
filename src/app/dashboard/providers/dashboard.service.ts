@@ -848,7 +848,8 @@ export class DashboardService {
           let monitorViews = 0;
           mapObject['mapViews'].forEach(view => {
             let viewUrls: Array<String> = this._getDashBoardItemMapAnalyticsUrl(view, 'MAP', userId);
-
+            console.log(view);
+            let legendSetting = {classes:view.classes,colorHigh:view.colorHigh,colorLow:view.colorLow,colorScale:view.colorScale};
             Observable.forkJoin(
               $.map(viewUrls, (url) => {
                 return this.http.get(url).map(res => res.json())
@@ -863,16 +864,22 @@ export class DashboardService {
                       if (newLayer instanceof Array) {
 
                         let layer = {};
+
                         layer['geofeatures_' + view.layer] = newLayer;
                         bufferMap.layers.push(layer);
                       } else {
                         let layer = {};
+
+                        newLayer['legendSetting'] = legendSetting;
                         layer[view.layer] = newLayer;
+
                         bufferMap.layers.push(layer);
+                        console.log(bufferMap.layers)
                       }
 
                     } else {
                       let layer = {};
+                      newLayer['legendSetting'] = legendSetting;
                       layer[view.layer] = newLayer;
                       bufferMap.layers.push(layer);
                     }

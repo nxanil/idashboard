@@ -82,7 +82,6 @@ export class DashboardItemCardComponent implements OnInit, AfterViewInit {
       (this.currentVisualization == 'EVENT_REPORT')) {
       this.updateDasboardItemForAnalyticTypeItems();
     } else if(this.currentVisualization == 'MAP') {
-      // this.analyticsObject = this.dashboardService.getMapAnalyticObject(this.itemData,this.currentUser.id);
       this.mapObject = this.dashboardService.getMapObject(this.itemData,this.currentUser.id);
       this.mapId = this.itemData.id;
     }else {

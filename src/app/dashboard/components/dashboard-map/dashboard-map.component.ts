@@ -167,8 +167,6 @@ export class DashboardMapComponent extends OnInit {
 
   getGeoJsonObject(geoFeatures) {
 
-    // this.dataElements = this.getDataElements();
-    // this.organisationUnits = this.getOrganisationUnit();
     let geoFeatureArray: any = []
     geoFeatureArray = this.getFeatures(geoFeatures);
     if (geoFeatureArray) {
@@ -311,7 +309,7 @@ export class DashboardMapComponent extends OnInit {
                 if (toolTip) {
                   layer.closeTooltip();
                 }
-
+                console.log("MOUSE REMOVED")
                 let popUp = layer.getPopup();
 
                 if (popUp && popUp.isOpen()) {
@@ -319,60 +317,64 @@ export class DashboardMapComponent extends OnInit {
                 }
               },
               mouseover: (event) => {
-                // let hoveredFeature:Feature<GeometryObject> = event.layer.feature;
-                //
-                // let featureName = hoveredFeature.properties.name;
-                // let dataElementName = hoveredFeature.properties.dataelement.name;
-                // let dataElementValue = hoveredFeature.properties.dataelement.value;
-                // let toolTipContent:string =
-                //     "<p><b>"+dataElementName+"</b></p>" +
-                //     "<div>" +
-                //     "<table>" +
-                //     "<tr><th>Organisation Unit Name :</th><td>"+featureName+"</td></tr>"+
-                //     "<tr><th>Available Data :</th><td>"+dataElementValue+"</td></tr>"+
-                //     "</table>" +
-                //     "</div>";
-                // layer.closeTooltip();
-                // let popUp = layer.getPopup();
-                // if (popUp && popUp.isOpen()){
-                //
-                // }else{
-                //     layer.bindTooltip(toolTipContent,{
-                //         direction:'auto',
-                //         permanent: true,
-                //         sticky: true,
-                //         interactive: true,
-                //         opacity: 2})
-                // }
-                //
-                // layer.setStyle((feature: GeoJSON.Feature<GeoJSON.GeometryObject>)=>{
-                //
-                //
-                //     let  color:any = ()=>{
-                //         let dataElementScore:any = feature.properties.dataelement.value;
-                //
-                //         return feature.properties.legend(feature.properties.dataelement.value);
-                //
-                //     }
-                //     let featureStyle :any =
-                //         {   "color":"#6F6E6D",
-                //             "fillColor":color(),
-                //             "fillOpacity":0.8,
-                //             "weight": 2,
-                //             "opacity": 1,
-                //             "stroke":true,
-                //         }
-                //
-                //     if ( hoveredFeature.properties.id == feature.properties.id )
-                //     {
-                //         featureStyle.fillOpacity = 1;
-                //     }
-                //
-                //
-                //
-                //     return featureStyle;
-                // });
+                let hoveredFeature:Feature<GeometryObject> = event.layer.feature;
+                let properties:any = hoveredFeature.properties;
+                console.log(hoveredFeature.properties);
+                let featureName = properties.name;
+                let dataElementName = properties.dataelement.name;
+                let dataElementValue = properties.dataelement.value;
+                let toolTipContent:string =
+                    "<div style='color:black'>" +
+                    "<table>" +
+                    "<tr><th>"+featureName+"</th><td> ("+dataElementValue+")</td></tr>"+
+                    "</table>" +
+                    "</div>";
+                layer.closeTooltip();
+                let popUp = layer.getPopup();
+                if (popUp && popUp.isOpen()){
 
+                }else{
+                    layer.bindTooltip(toolTipContent,{
+                        direction:'auto',
+                        permanent: true,
+                        sticky: true,
+                        interactive: true,
+                        opacity: 2})
+                }
+
+                layer.setStyle((feature: GeoJSON.Feature<GeoJSON.GeometryObject>)=>{
+                  let properties:any = feature.properties;
+
+                    let  color:any = ()=>{
+                        let dataElementScore:any = properties.dataelement.value;
+                      return (feature.properties as any).legend(dataElementScore);
+
+                    }
+                    let featureStyle :any =
+                        {   "color":"#6F6E6D",
+                            "fillColor":color(),
+                            "fillOpacity":0.8,
+                            "weight": 2,
+                            "opacity": 1,
+                            "stroke":true,
+                        }
+                        let hov:any = hoveredFeature.properties;
+                    if ( hov.id == properties.id )
+                    {
+                        featureStyle.fillOpacity = 1;
+                    }
+
+
+
+                    return featureStyle;
+                });
+
+              },
+              mouseout:(event)=>{
+                let toolTip = layer.getTooltip();
+                if (toolTip) {
+                  layer.closeTooltip();
+                }
               }
 
 
@@ -380,12 +382,12 @@ export class DashboardMapComponent extends OnInit {
 
 
             this.topLayers[dataLayer.name] = layer;
-
             if (index == 0) {
               this.defaultTopLayer = layer;
             } else {
 
             }
+
 
             index++;
 
@@ -541,17 +543,18 @@ export class DashboardMapComponent extends OnInit {
         zoom: this.mapProperties.length > 0 ? this.mapProperties.zoom : 5,
         minZoom: 4,
         maxZoom: 18,
-        layers: [this.baseMaps.OpenStreetMap, this.defaultTopLayer]
+        layers: [this.baseMaps.OpenStreetMap,this.defaultTopLayer]
       });
-
-
-
       L.control.zoom({position: "topright"}).addTo(map);
 
 
-      L.control.layers(this.baseMaps,this.topLayers).addTo(map);
-
+      L.control.layers(this.topLayers).addTo(map);
       L.control.scale().addTo(map);
+
+
+      var legend = L.control({position: 'bottomright'});
+
+
 
       this.map = map;
 
